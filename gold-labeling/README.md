@@ -32,6 +32,7 @@ For data-entry workers, use the simpler helper tool instead of editing these tem
 
 - `simple-labeling-tool.html`
 - `SIMPLE_DATA_ENTRY_GUIDE.md`
+- `WINDOWS_VIDEO_PLAYBACK_GUIDE.md`
 
 The helper opens in a browser, lets the worker load a local video, fill out guided fields, and export the JSON/Markdown files.
 

@@ -25,11 +25,96 @@ Only write what is visible in the video.
 - the video file your manager gave you
 - this folder
 - Chrome or Edge
+- Windows Media Player or Windows Media Player Legacy
 - headphones are optional
 
 ## Step By Step
 
-### 1. Open The Helper Tool
+### 1. Put The Files Somewhere Easy
+
+Create one folder on your Desktop called:
+
+```text
+Mitori Gold Labeling
+```
+
+Put these files/folders inside it:
+
+- the video file or files your manager gave you
+- this `gold-labeling` folder
+
+Example:
+
+```text
+Desktop
+└── Mitori Gold Labeling
+    ├── video-001-clean-customer-update.mp4
+    └── gold-labeling
+        ├── SIMPLE_DATA_ENTRY_GUIDE.md
+        └── simple-labeling-tool.html
+```
+
+### 2. Open The Video In Windows Media Player
+
+Use Windows Media Player to watch the video and read timestamps.
+
+1. Open the `Mitori Gold Labeling` folder.
+2. Find the video file, for example:
+
+```text
+video-001-clean-customer-update.mp4
+```
+
+3. Right-click the video file.
+4. Click `Open with`.
+5. Click `Media Player`.
+6. If you do not see `Media Player`, click `Choose another app`, then select `Media Player`.
+7. If Windows asks "How do you want to open this file?", choose `Media Player`.
+
+When the video opens:
+
+- press the play button to play
+- press the pause button to pause
+- drag the progress bar to move through the video
+- look at the time shown on the player, such as `0:45 / 1:45`
+
+The first number is the current timestamp. In `0:45 / 1:45`, the current timestamp is 45 seconds.
+
+Use these examples:
+
+| Player time | Type this in the labeling tool |
+|---|---:|
+| `0:05` | `5` |
+| `0:45` | `45` |
+| `1:10` | `70` |
+| `2:05` | `125` |
+
+If the player shows hours, minutes, and seconds:
+
+| Player time | Type this in the labeling tool |
+|---|---:|
+| `00:01:30` | `90` |
+| `00:02:15` | `135` |
+
+It is okay if your timestamp is not exact. Try to be within a few seconds.
+
+### 3. If Media Player Does Not Work
+
+Try these options in order:
+
+1. Right-click the video.
+2. Click `Open with`.
+3. Try `Photos`.
+4. If Photos works, use its playback bar and timestamp.
+5. If neither app works, tell your manager:
+
+```text
+I cannot open the video in Windows Media Player or Photos.
+```
+
+Do not install new software unless your manager tells you to.
+
+### 4. Open The Helper Tool
 
 Double-click:
 
@@ -37,9 +122,15 @@ Double-click:
 simple-labeling-tool.html
 ```
 
-If the browser asks permission to open a local video, allow it.
+It should open in Chrome or Edge.
 
-### 2. Load The Video
+If Windows asks how to open it:
+
+1. Choose `Chrome` or `Edge`.
+2. If you do not see either option, choose `Open with`.
+3. Select `Google Chrome` or `Microsoft Edge`.
+
+### 5. Load The Video In The Helper Tool
 
 Click:
 
@@ -49,6 +140,15 @@ Choose File
 
 Select the video you are labeling.
 
+This loads the video inside the helper tool. You can use either:
+
+- the helper tool video player, or
+- Windows Media Player
+
+If the helper video player works well, use it because the `Use Current Time` buttons will fill timestamps for you.
+
+If the helper video player is awkward, use Windows Media Player to read the timestamp and type the time manually.
+
 Type the video ID exactly, for example:
 
 ```text
@@ -57,7 +157,22 @@ video-001-clean-customer-update
 
 Type your labeler name or worker ID.
 
-### 3. Watch The Video Once
+### 6. Arrange The Windows
+
+Put the helper tool and the video player side by side if possible.
+
+Easy option:
+
+1. Click the video player window.
+2. Hold the `Windows` key and press the `Left Arrow`.
+3. Click the browser/helper tool window.
+4. Hold the `Windows` key and press the `Right Arrow`.
+
+Now the video should be on one side and the helper tool on the other side.
+
+If that is confusing, just switch between the windows using the taskbar at the bottom of the screen.
+
+### 7. Watch The Video Once
 
 Just watch the whole video.
 
@@ -69,7 +184,9 @@ Example:
 The worker opened a customer update spreadsheet, searched for Acme North in the CRM, changed several fields, and saved the record.
 ```
 
-### 4. Add Steps
+Do not worry about exact steps during the first watch.
+
+### 8. Add Steps
 
 Watch the video again.
 
@@ -89,11 +206,13 @@ Examples of meaningful actions:
 For each step:
 
 1. Pause where the step starts.
-2. Click `Use Current Time` in the step start field.
+2. Click `Use Current Time` in the step start field, or type the Media Player timestamp manually.
 3. Play until the step ends.
-4. Click `Use Current Time` in the step end field.
+4. Click `Use Current Time` in the step end field, or type the Media Player timestamp manually.
 5. Write what happened.
 6. Write the evidence you can see.
+
+Use short, clear step labels.
 
 Good step:
 
@@ -111,7 +230,30 @@ Evidence: It looks done.
 
 The bad example is too vague and judges the work.
 
-### 5. Mark Interruptions
+### 9. How Detailed Should Steps Be?
+
+Use one step for each meaningful action.
+
+Too broad:
+
+```text
+The worker updated the customer.
+```
+
+Better:
+
+```text
+The worker opened the customer spreadsheet.
+The worker found the Acme North row.
+The worker searched for Acme North in the CRM.
+The worker changed the Account Owner field to Priya Shah.
+The worker changed the Renewal Date field to 2026-07-31.
+The worker saved the record.
+```
+
+Do not create a separate step for every tiny mouse movement.
+
+### 10. Mark Interruptions
 
 If the worker does something unrelated, write it in the Interruptions box.
 
@@ -127,7 +269,7 @@ If there are no interruptions, write:
 None observed.
 ```
 
-### 6. Mark Rework Or Corrections
+### 11. Mark Rework Or Corrections
 
 If the worker changes something, then fixes or repeats it, write it in the Rework box.
 
@@ -143,7 +285,7 @@ If there is no rework, write:
 None observed.
 ```
 
-### 7. Mark Discrepancies
+### 12. Mark Discrepancies
 
 A discrepancy is when something visible does not match another visible thing.
 
@@ -159,7 +301,7 @@ If there are no discrepancies, write:
 None observed.
 ```
 
-### 8. Mark Uncertainty
+### 13. Mark Uncertainty
 
 If you are not sure, say so.
 
@@ -171,7 +313,18 @@ The text in the field is hard to read, so I am not sure whether the email addres
 
 Do not guess.
 
-### 9. Export Files
+### 14. Save A Draft If You Need A Break
+
+If you need to stop before finishing:
+
+1. Click `Save Draft In Browser`.
+2. Leave the browser installed and do not clear browser data.
+3. When you come back, open the same helper tool.
+4. Click `Load Draft`.
+
+Important: the draft is only saved on that computer and in that browser.
+
+### 15. Export Files
 
 Click:
 
@@ -180,7 +333,43 @@ Export JSON
 Export Markdown
 ```
 
+This downloads two files.
+
+They should look like this:
+
+```text
+video-001-clean-customer-update.gold.json
+video-001-clean-customer-update.gold.md
+```
+
 Send both exported files to your manager.
+
+Do not rename them unless your manager asks you to.
+
+## Worked Example Of One Step
+
+Imagine the video shows the worker typing an email address into a Billing Email field.
+
+You might enter:
+
+```text
+Start time: 85
+End time: 95
+Observed action: Worker entered ap-north@example.test into the Billing Email field.
+Screen/app context: Chrome CRM page
+Evidence: Billing Email field shows ap-north@example.test.
+Confidence: 0.9
+Uncertainty: blank
+```
+
+If the email is hard to read:
+
+```text
+Observed action: Worker entered a billing email address.
+Evidence: Billing Email field contains an email address, but it is hard to read.
+Confidence: 0.6
+Uncertainty: Exact email address is not clear.
+```
 
 ## Quality Checklist
 
@@ -194,6 +383,36 @@ Before sending your files, check:
 - rework is listed or says `None observed`
 - uncertainty is listed if anything was unclear
 - you did not include real customer or private data
+
+## Common Problems
+
+### I cannot see the timestamp
+
+Move your mouse over the video player. The playback bar and time usually appear at the bottom.
+
+### I cannot get the exact second
+
+Pause as close as you can. A few seconds difference is okay.
+
+### The helper tool timestamp button does not work
+
+Use Windows Media Player to read the time and type it manually.
+
+### I do not understand what the worker is doing
+
+Write what you can see. Example:
+
+```text
+The worker opened a form page and typed into a field. The exact purpose of the form is unclear.
+```
+
+### The video is blurry
+
+Write that in uncertainty:
+
+```text
+Some field values are blurry and hard to read.
+```
 
 ## If You Get Stuck
 

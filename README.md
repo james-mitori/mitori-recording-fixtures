@@ -30,6 +30,7 @@ For data-entry workers, use the simpler guide and local browser tool:
 
 - [gold-labeling/SIMPLE_DATA_ENTRY_GUIDE.md](gold-labeling/SIMPLE_DATA_ENTRY_GUIDE.md)
 - [gold-labeling/simple-labeling-tool.html](gold-labeling/simple-labeling-tool.html)
+- [gold-labeling/WINDOWS_VIDEO_PLAYBACK_GUIDE.md](gold-labeling/WINDOWS_VIDEO_PLAYBACK_GUIDE.md)
 
 Gold labels are used to measure whether AI workflow extraction agrees with careful human observation. They are not used to judge worker performance.
 
