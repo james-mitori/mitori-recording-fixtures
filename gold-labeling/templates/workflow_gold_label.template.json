@@ -1,0 +1,44 @@
+{
+  "sample_id": "video-000-example",
+  "gold_label_version": "0.1.0",
+  "label_type": "human_video_observed_gold",
+  "labeler_id": "",
+  "adjudicated": false,
+  "source_files_used": [
+    "video_only"
+  ],
+  "workflow_instances": [
+    {
+      "instance_id": "gold_wf_001",
+      "type": "complete_workflow",
+      "observed_label": "",
+      "start_time_sec": 0,
+      "end_time_sec": 0,
+      "completion_status": "",
+      "confidence": 0,
+      "summary": "",
+      "steps": [
+        {
+          "step_id": "gold_step_001",
+          "start_time_sec": 0,
+          "end_time_sec": 0,
+          "observed_label": "",
+          "screen_context": "",
+          "evidence": [
+            {
+              "timestamp_sec": 0,
+              "visible_evidence": ""
+            }
+          ],
+          "confidence": 0,
+          "uncertainty": null
+        }
+      ],
+      "interruptions": [],
+      "rework": [],
+      "observed_discrepancies": [],
+      "uncertainty": []
+    }
+  ],
+  "review_notes": []
+}

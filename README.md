@@ -18,6 +18,16 @@ WORKER_INSTRUCTIONS.txt
 
 Workers should complete Videos 1, 2, and 3 unless told otherwise.
 
+## Gold Labeling
+
+After recordings are complete, human labelers can create reference workflow labels from the videos.
+
+Start here:
+
+[gold-labeling/README.md](gold-labeling/README.md)
+
+Gold labels are used to measure whether AI workflow extraction agrees with careful human observation. They are not used to judge worker performance.
+
 ## What Is Included
 
 The worker pack contains:
@@ -71,4 +81,3 @@ cp HOW_TO_RECORD_SCREEN.md mitori-recording-fixtures/HOW_TO_RECORD_SCREEN.md
 cp HOW_TO_RECORD_SCREEN.txt mitori-recording-fixtures/HOW_TO_RECORD_SCREEN.txt
 zip -r worker-packages/mitori-recording-fixtures-worker-pack.zip mitori-recording-fixtures
 ```
-
