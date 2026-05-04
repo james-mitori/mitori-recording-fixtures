@@ -1,0 +1,7 @@
+customer_id,customer_name,current_owner,new_owner,current_status,new_status,current_renewal_date,new_renewal_date,current_billing_email,new_billing_email,notes
+C-10017,Acme North,Daniel Park,Priya Shah,Active,Renewal Review,2026-06-30,2026-07-31,billing@acmenorth.example,ap-north@example.test,"Update owner, renewal date, and billing email. Verify on summary screen."
+C-10022,Brightlane Foods,Priya Shah,Maya Chen,Active,Active,2026-08-15,2026-08-15,finance@brightlane.example,finance.ops@brightlane.example,Billing email only.
+C-10039,Northstar Demo Care,Alex Rivera,Alex Rivera,Onboarding,Active,2026-09-01,2026-09-01,ap@northstardemo.example,ap@northstardemo.example,Status update after onboarding checklist complete.
+C-10044,Harbor Clinic Group,Maya Chen,Daniel Park,Renewal Review,Active,2026-05-31,2027-05-31,billing@harborclinic.example,billing@harborclinic.example,Renewal completed; update owner and next renewal date.
+C-10058,Silverline Parts,Jordan Lee,Jordan Lee,Active,At Risk,2026-10-10,2026-10-10,accounts@silverline.example,accounts@silverline.example,Mark at risk after missed QBR.
+C-10063,Cedar Trial Services,Priya Shah,Priya Shah,Trial,Trial,2026-06-14,2026-06-14,trial@cedar.example,trial@cedar.example,No action required; review only.

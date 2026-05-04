@@ -1,0 +1,20 @@
+From: Casey Nguyen <casey.nguyen@example.test>
+To: Operations Queue <ops.queue@example.test>
+Subject: Billing portal access issue - Acme North
+Date: 2026-05-04 09:18
+
+Hi team,
+
+Acme North says their AP contact cannot access the billing portal after the recent owner update.
+
+Customer: Acme North
+Account ID: C-10017
+Requested category: Billing Portal
+Suggested priority: Medium
+Contact: Morgan Ellis, AP Coordinator
+Callback: 555-0104
+
+Please create a support case, include the customer/account ID, mark priority Medium, and note that the AP contact needs portal access restored.
+
+Thanks,
+Casey

@@ -1,0 +1,8 @@
+Daily notes - synthetic interruption tasks
+
+Unrelated quick task options:
+- Rename the draft file "northstar-note-draft.txt" to "northstar-note-final.txt".
+- Check whether Brightlane Foods has a billing email update in customer_updates.csv.
+- Add this note to a scratch document: "Follow up with Casey after support case is submitted."
+
+Use one of these tasks as an interruption during Video 3 or Video 4.

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fixture CRM</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fb; color: #172033; }
+    header { background: #172033; color: white; padding: 16px 24px; }
+    main { padding: 24px; max-width: 1080px; margin: auto; }
+    section { background: white; border: 1px solid #d7deea; border-radius: 6px; padding: 18px; margin-bottom: 16px; }
+    label { display: block; font-weight: 700; margin-top: 12px; }
+    input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; border: 1px solid #b9c3d3; border-radius: 4px; margin-top: 4px; }
+    button { margin-top: 16px; padding: 10px 14px; border: 0; background: #1f6feb; color: white; border-radius: 4px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border-bottom: 1px solid #e2e7f0; padding: 8px; text-align: left; }
+    .notice { display: none; margin-top: 14px; padding: 12px; background: #e9f8ef; border: 1px solid #98d4aa; color: #165a2f; border-radius: 4px; }
+    .warning { background: #fff7df; border-color: #e4c565; color: #6f4c00; }
+    .muted { color: #5b6678; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  </style>
+</head>
+<body>
+  <header><h1>Fixture CRM</h1></header>
+  <main>
+
+    <section>
+      <p class="muted">Use this local page as the destination system for customer update recordings.</p>
+      <label for="search">Search customer</label>
+      <input id="search" placeholder="Type Acme North, C-10017, or another customer">
+      <button onclick="findCustomer()">Open record</button>
+      <div id="searchNotice" class="notice warning">Record opened. Review and update the fields below.</div>
+      <table>
+        <thead><tr><th>ID</th><th>Customer</th><th>Owner</th><th>Status</th><th>Renewal</th></tr></thead>
+        <tbody><tr><td>C-10017</td><td>Acme North</td><td>Daniel Park</td><td>Active</td><td>2026-06-30</td></tr>
+<tr><td>C-10022</td><td>Brightlane Foods</td><td>Priya Shah</td><td>Active</td><td>2026-08-15</td></tr>
+<tr><td>C-10039</td><td>Northstar Demo Care</td><td>Alex Rivera</td><td>Onboarding</td><td>2026-09-01</td></tr>
+<tr><td>C-10044</td><td>Harbor Clinic Group</td><td>Maya Chen</td><td>Renewal Review</td><td>2026-05-31</td></tr>
+<tr><td>C-10058</td><td>Silverline Parts</td><td>Jordan Lee</td><td>Active</td><td>2026-10-10</td></tr>
+<tr><td>C-10063</td><td>Cedar Trial Services</td><td>Priya Shah</td><td>Trial</td><td>2026-06-14</td></tr></tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Customer Record: Acme North</h2>
+      <div class="grid">
+        <div><label>Account owner</label><input id="owner" value="Daniel Park"></div>
+        <div><label>Status</label><select id="status"><option>Active</option><option>Renewal Review</option><option>At Risk</option></select></div>
+        <div><label>Renewal date</label><input id="renewal" value="2026-06-30"></div>
+        <div><label>Billing email</label><input id="email" value="billing@acmenorth.example"></div>
+      </div>
+      <label>Internal note</label>
+      <textarea id="note" rows="3">Current record awaiting review.</textarea>
+      <button onclick="saveRecord()">Save customer record</button>
+      <div id="saveNotice" class="notice">Customer record saved. Summary updated for Acme North.</div>
+    </section>
+    <script>
+      function findCustomer() {
+        document.getElementById('searchNotice').style.display = 'block';
+      }
+      function saveRecord() {
+        document.getElementById('saveNotice').style.display = 'block';
+      }
+    </script>
+
+  </main>
+</body>
+</html>

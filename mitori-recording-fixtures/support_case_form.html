@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support Case Console</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f5f7fb; color: #172033; }
+    header { background: #172033; color: white; padding: 16px 24px; }
+    main { padding: 24px; max-width: 1080px; margin: auto; }
+    section { background: white; border: 1px solid #d7deea; border-radius: 6px; padding: 18px; margin-bottom: 16px; }
+    label { display: block; font-weight: 700; margin-top: 12px; }
+    input, select, textarea { width: 100%; box-sizing: border-box; padding: 9px; border: 1px solid #b9c3d3; border-radius: 4px; margin-top: 4px; }
+    button { margin-top: 16px; padding: 10px 14px; border: 0; background: #1f6feb; color: white; border-radius: 4px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border-bottom: 1px solid #e2e7f0; padding: 8px; text-align: left; }
+    .notice { display: none; margin-top: 14px; padding: 12px; background: #e9f8ef; border: 1px solid #98d4aa; color: #165a2f; border-radius: 4px; }
+    .warning { background: #fff7df; border-color: #e4c565; color: #6f4c00; }
+    .muted { color: #5b6678; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  </style>
+</head>
+<body>
+  <header><h1>Support Case Console</h1></header>
+  <main>
+
+    <section>
+      <p class="muted">Use support_email.txt as the source message.</p>
+      <div class="grid">
+        <div><label>Customer</label><input placeholder="Customer name"></div>
+        <div><label>Account ID</label><input placeholder="Account ID"></div>
+        <div><label>Priority</label><select><option></option><option>Low</option><option>Medium</option><option>High</option></select></div>
+        <div><label>Category</label><select><option></option><option>Billing Portal</option><option>Login</option><option>Data Request</option></select></div>
+      </div>
+      <label>Issue summary</label>
+      <input placeholder="Short summary">
+      <label>Case notes</label>
+      <textarea rows="5" placeholder="Observed issue and requested action"></textarea>
+      <button onclick="saveDraft()">Save draft</button>
+      <button onclick="submitCase()">Submit case</button>
+      <div id="draft" class="notice warning">Draft saved. Case is not submitted yet.</div>
+      <div id="done" class="notice">Support case submitted. Case ID: SC-58291.</div>
+    </section>
+    <script>
+      function saveDraft() {
+        document.getElementById('draft').style.display = 'block';
+      }
+      function submitCase() {
+        document.getElementById('done').style.display = 'block';
+      }
+    </script>
+
+  </main>
+</body>
+</html>
