@@ -28,6 +28,13 @@ Use these templates:
 - `templates/workflow_gold_label.template.json`
 - `templates/workflow_gold_label.template.md`
 
+For data-entry workers, use the simpler helper tool instead of editing these templates by hand:
+
+- `simple-labeling-tool.html`
+- `SIMPLE_DATA_ENTRY_GUIDE.md`
+
+The helper opens in a browser, lets the worker load a local video, fill out guided fields, and export the JSON/Markdown files.
+
 ## Labeling Method
 
 Use a video player that shows timestamps. Watch each video at least twice.

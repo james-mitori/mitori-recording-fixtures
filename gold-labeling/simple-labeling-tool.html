@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mitori Gold Label Helper</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+      --border: #c9d1d9;
+      --bg: #f6f8fa;
+      --text: #1f2328;
+      --muted: #59636e;
+      --blue: #0969da;
+      --green: #1a7f37;
+    }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: white;
+    }
+    header {
+      padding: 18px 24px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+    h2 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+    }
+    p {
+      margin: 6px 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(360px, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      background: white;
+    }
+    video {
+      width: 100%;
+      max-height: 520px;
+      background: #111;
+      border-radius: 6px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 4px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    input, textarea, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font: inherit;
+    }
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+    button {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary {
+      color: white;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    button.success {
+      color: white;
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+      align-items: center;
+    }
+    .time {
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 12px 0;
+      background: #fff;
+    }
+    .step-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .help {
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .inline-button {
+      margin-top: 4px;
+      font-size: 12px;
+      padding: 5px 7px;
+    }
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mitori Gold Label Helper</h1>
+    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels.</p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="panel">
+        <h2>1. Load Video</h2>
+        <input id="videoFile" type="file" accept="video/*">
+        <div class="toolbar">
+          <span>Current time: <span id="currentTime" class="time">0.00s</span></span>
+          <button type="button" onclick="rewindFive()">Back 5s</button>
+          <button type="button" onclick="forwardFive()">Forward 5s</button>
+        </div>
+        <video id="video" controls></video>
+
+        <h2>2. Basic Details</h2>
+        <label for="sampleId">Video ID</label>
+        <input id="sampleId" placeholder="video-001-clean-customer-update">
+
+        <label for="labelerId">Your name or worker ID</label>
+        <input id="labelerId" placeholder="worker-001">
+
+        <label for="summary">Short summary of what happened</label>
+        <textarea id="summary" placeholder="Write 2-4 sentences. Only describe what you can see."></textarea>
+
+        <label for="completionStatus">Completion status</label>
+        <select id="completionStatus">
+          <option value="completed">completed</option>
+          <option value="partially_completed">partially_completed</option>
+          <option value="abandoned">abandoned</option>
+          <option value="interrupted_then_completed">interrupted_then_completed</option>
+          <option value="unclear">unclear</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label for="workflowStart">Workflow start time</label>
+            <input id="workflowStart" type="number" step="0.01" value="0">
+            <button class="inline-button" type="button" onclick="setTime('workflowStart')">Use Current Time</button>
+          </div>
+          <div>
+            <label for="workflowEnd">Workflow end time</label>
+            <input id="workflowEnd" type="number" step="0.01" value="0">
+            <button class="inline-button" type="button" onclick="setTime('workflowEnd')">Use Current Time</button>
+          </div>
+        </div>
+
+        <label for="workflowLabel">Workflow name</label>
+        <input id="workflowLabel" placeholder="Example: Update customer record in CRM">
+      </section>
+
+      <section class="panel">
+        <h2>3. Steps</h2>
+        <div class="help">
+          <strong>Simple rule:</strong> every step needs a start time, end time, observed action, and evidence.
+          Use plain language. Do not guess.
+        </div>
+        <button class="primary" type="button" onclick="addStep()">Add Step</button>
+        <div id="steps"></div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <h2>4. Messy Work Notes</h2>
+      <div class="row">
+        <div>
+          <label for="interruptions">Interruptions</label>
+          <textarea id="interruptions" placeholder="Write interruptions, or 'None observed.'"></textarea>
+        </div>
+        <div>
+          <label for="rework">Rework or corrections</label>
+          <textarea id="rework" placeholder="Write rework/corrections, or 'None observed.'"></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="discrepancies">Observed discrepancies</label>
+          <textarea id="discrepancies" placeholder="Write discrepancies, or 'None observed.'"></textarea>
+        </div>
+        <div>
+          <label for="uncertainty">Uncertainty</label>
+          <textarea id="uncertainty" placeholder="Write anything unclear, or 'None observed.'"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>5. Export</h2>
+      <div class="toolbar">
+        <button class="success" type="button" onclick="downloadJson()">Export JSON</button>
+        <button class="success" type="button" onclick="downloadMarkdown()">Export Markdown</button>
+        <button type="button" onclick="saveDraft()">Save Draft In Browser</button>
+        <button type="button" onclick="loadDraft()">Load Draft</button>
+      </div>
+      <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page.</p>
+    </section>
+  </main>
+
+  <script>
+    const video = document.getElementById('video');
+    const currentTime = document.getElementById('currentTime');
+    const steps = document.getElementById('steps');
+
+    document.getElementById('videoFile').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      video.src = URL.createObjectURL(file);
+      const base = file.name.replace(/\.[^.]+$/, '');
+      if (!document.getElementById('sampleId').value) {
+        document.getElementById('sampleId').value = base;
+      }
+    });
+
+    video.addEventListener('timeupdate', () => {
+      currentTime.textContent = `${video.currentTime.toFixed(2)}s`;
+    });
+
+    function setTime(id) {
+      document.getElementById(id).value = video.currentTime.toFixed(2);
+    }
+
+    function rewindFive() {
+      video.currentTime = Math.max(0, video.currentTime - 5);
+    }
+
+    function forwardFive() {
+      video.currentTime = Math.min(video.duration || video.currentTime + 5, video.currentTime + 5);
+    }
+
+    function addStep(data = {}) {
+      const index = steps.children.length + 1;
+      const div = document.createElement('div');
+      div.className = 'step';
+      div.innerHTML = `
+        <div class="step-title">
+          <strong>Step ${index}</strong>
+          <button type="button" onclick="this.closest('.step').remove(); renumberSteps();">Remove</button>
+        </div>
+        <div class="row">
+          <div>
+            <label>Start time</label>
+            <input class="step-start" type="number" step="0.01" value="${data.start_time_sec ?? ''}">
+            <button class="inline-button" type="button" onclick="this.previousElementSibling.value = video.currentTime.toFixed(2)">Use Current Time</button>
+          </div>
+          <div>
+            <label>End time</label>
+            <input class="step-end" type="number" step="0.01" value="${data.end_time_sec ?? ''}">
+            <button class="inline-button" type="button" onclick="this.previousElementSibling.value = video.currentTime.toFixed(2)">Use Current Time</button>
+          </div>
+        </div>
+        <label>Observed action</label>
+        <textarea class="step-action" placeholder="What did the worker do?">${escapeHtml(data.observed_label || '')}</textarea>
+        <label>Screen/app context</label>
+        <input class="step-context" placeholder="Example: Excel, Chrome CRM page, File Explorer" value="${escapeHtml(data.screen_context || '')}">
+        <label>Evidence you can see</label>
+        <textarea class="step-evidence" placeholder="Example: Account Owner field shows Priya Shah.">${escapeHtml(data.evidence_text || '')}</textarea>
+        <div class="row">
+          <div>
+            <label>Confidence</label>
+            <select class="step-confidence">
+              ${confidenceOptions(data.confidence)}
+            </select>
+          </div>
+          <div>
+            <label>Uncertainty</label>
+            <input class="step-uncertainty" placeholder="Leave blank if none" value="${escapeHtml(data.uncertainty || '')}">
+          </div>
+        </div>
+      `;
+      steps.appendChild(div);
+    }
+
+    function confidenceOptions(selected) {
+      const values = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4];
+      return values.map((value) => {
+        const isSelected = Number(selected || 0.9) === value ? 'selected' : '';
+        return `<option value="${value}" ${isSelected}>${value}</option>`;
+      }).join('');
+    }
+
+    function renumberSteps() {
+      [...steps.children].forEach((step, index) => {
+        step.querySelector('.step-title strong').textContent = `Step ${index + 1}`;
+      });
+    }
+
+    function collectData() {
+      const sampleId = value('sampleId') || 'unnamed-video';
+      const stepData = [...steps.children].map((step, index) => {
+        const start = numberValue(step.querySelector('.step-start'));
+        const end = numberValue(step.querySelector('.step-end'));
+        const evidenceText = fieldValue(step, '.step-evidence');
+        return {
+          step_id: `gold_step_${String(index + 1).padStart(3, '0')}`,
+          start_time_sec: start,
+          end_time_sec: end,
+          observed_label: fieldValue(step, '.step-action'),
+          screen_context: fieldValue(step, '.step-context'),
+          evidence: [{
+            timestamp_sec: start,
+            visible_evidence: evidenceText
+          }],
+          confidence: Number(fieldValue(step, '.step-confidence') || 0.9),
+          uncertainty: fieldValue(step, '.step-uncertainty') || null
+        };
+      });
+      return {
+        sample_id: sampleId,
+        gold_label_version: '0.1.0',
+        label_type: 'human_video_observed_gold',
+        labeler_id: value('labelerId'),
+        adjudicated: false,
+        source_files_used: ['video_only'],
+        workflow_instances: [{
+          instance_id: 'gold_wf_001',
+          type: 'complete_workflow',
+          observed_label: value('workflowLabel'),
+          start_time_sec: numberValue(document.getElementById('workflowStart')),
+          end_time_sec: numberValue(document.getElementById('workflowEnd')),
+          completion_status: value('completionStatus'),
+          confidence: 0.9,
+          summary: value('summary'),
+          steps: stepData,
+          interruptions: textList('interruptions'),
+          rework: textList('rework'),
+          observed_discrepancies: textList('discrepancies'),
+          uncertainty: textList('uncertainty').map((item) => item.note)
+        }],
+        review_notes: []
+      };
+    }
+
+    function toMarkdown(data) {
+      const wf = data.workflow_instances[0];
+      const rows = wf.steps.map((step, index) => (
+        `| ${index + 1} | ${step.start_time_sec} | ${step.end_time_sec} | ${cleanCell(step.observed_label)} | ${cleanCell(step.evidence[0].visible_evidence)} | ${step.confidence} | ${cleanCell(step.uncertainty || '')} |`
+      )).join('\n');
+      return `# Gold Label
+
+Video ID: ${data.sample_id}
+
+Labeler: ${data.labeler_id}
+
+Adjudicated: No
+
+## Short Summary
+
+${wf.summary}
+
+## Workflow Instances
+
+### Workflow 1
+
+- Label: ${wf.observed_label}
+- Start time: ${wf.start_time_sec}
+- End time: ${wf.end_time_sec}
+- Completion status: ${wf.completion_status}
+- Confidence: ${wf.confidence}
+
+### Steps
+
+| Step | Start | End | Observed action | Evidence | Confidence | Uncertainty |
+|---|---:|---:|---|---|---:|---|
+${rows}
+
+## Interruptions
+
+${listToMarkdown(wf.interruptions)}
+
+## Rework / Corrections
+
+${listToMarkdown(wf.rework)}
+
+## Observed Discrepancies
+
+${listToMarkdown(wf.observed_discrepancies)}
+
+## Uncertainty
+
+${wf.uncertainty.length ? wf.uncertainty.map((item) => `- ${item}`).join('\n') : 'None observed.'}
+`;
+    }
+
+    function downloadJson() {
+      const data = collectData();
+      download(`${data.sample_id}.gold.json`, JSON.stringify(data, null, 2) + '\n', 'application/json');
+    }
+
+    function downloadMarkdown() {
+      const data = collectData();
+      download(`${data.sample_id}.gold.md`, toMarkdown(data), 'text/markdown');
+    }
+
+    function saveDraft() {
+      localStorage.setItem('mitoriGoldLabelDraft', JSON.stringify(collectData()));
+      alert('Draft saved in this browser.');
+    }
+
+    function loadDraft() {
+      const raw = localStorage.getItem('mitoriGoldLabelDraft');
+      if (!raw) {
+        alert('No draft found.');
+        return;
+      }
+      const data = JSON.parse(raw);
+      document.getElementById('sampleId').value = data.sample_id || '';
+      document.getElementById('labelerId').value = data.labeler_id || '';
+      const wf = data.workflow_instances[0] || {};
+      document.getElementById('summary').value = wf.summary || '';
+      document.getElementById('completionStatus').value = wf.completion_status || 'completed';
+      document.getElementById('workflowStart').value = wf.start_time_sec || 0;
+      document.getElementById('workflowEnd').value = wf.end_time_sec || 0;
+      document.getElementById('workflowLabel').value = wf.observed_label || '';
+      document.getElementById('interruptions').value = notesToText(wf.interruptions);
+      document.getElementById('rework').value = notesToText(wf.rework);
+      document.getElementById('discrepancies').value = notesToText(wf.observed_discrepancies);
+      document.getElementById('uncertainty').value = (wf.uncertainty || []).join('\n');
+      steps.innerHTML = '';
+      (wf.steps || []).forEach((step) => addStep({
+        ...step,
+        evidence_text: step.evidence && step.evidence[0] ? step.evidence[0].visible_evidence : ''
+      }));
+      renumberSteps();
+    }
+
+    function value(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function fieldValue(parent, selector) {
+      return parent.querySelector(selector).value.trim();
+    }
+
+    function numberValue(input) {
+      const number = Number(input.value);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function textList(id) {
+      const text = value(id);
+      if (!text || text.toLowerCase() === 'none observed.') return [];
+      return text.split('\n').map((line) => line.trim()).filter(Boolean).map((note, index) => ({
+        id: `${id}_${String(index + 1).padStart(3, '0')}`,
+        note
+      }));
+    }
+
+    function notesToText(items) {
+      if (!items || !items.length) return 'None observed.';
+      return items.map((item) => item.note || String(item)).join('\n');
+    }
+
+    function listToMarkdown(items) {
+      if (!items || !items.length) return 'None observed.';
+      return items.map((item) => `- ${item.note || item}`).join('\n');
+    }
+
+    function cleanCell(text) {
+      return String(text || '').replace(/\|/g, '/').replace(/\n/g, ' ');
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function download(filename, text, type) {
+      const blob = new Blob([text], { type });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+    }
+
+    addStep();
+  </script>
+</body>
+</html>
