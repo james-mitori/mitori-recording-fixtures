@@ -179,7 +179,7 @@
 <body>
   <header>
     <h1>Mitori Gold Label Helper</h1>
-    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.2.1.</p>
+    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.2.2.</p>
   </header>
 
   <main>
@@ -246,21 +246,21 @@
       <div class="row">
         <div>
           <label for="interruptions">Interruptions</label>
-          <textarea id="interruptions" placeholder="Write interruptions, or 'None observed.'"></textarea>
+          <textarea id="interruptions" placeholder="Write interruptions, or 'None observed.'">None observed.</textarea>
         </div>
         <div>
           <label for="rework">Rework or corrections</label>
-          <textarea id="rework" placeholder="Write rework/corrections, or 'None observed.'"></textarea>
+          <textarea id="rework" placeholder="Write rework/corrections, or 'None observed.'">None observed.</textarea>
         </div>
       </div>
       <div class="row">
         <div>
           <label for="discrepancies">Observed discrepancies</label>
-          <textarea id="discrepancies" placeholder="Write discrepancies, or 'None observed.'"></textarea>
+          <textarea id="discrepancies" placeholder="Write discrepancies, or 'None observed.'">None observed.</textarea>
         </div>
         <div>
           <label for="uncertainty">Uncertainty</label>
-          <textarea id="uncertainty" placeholder="Write anything unclear, or 'None observed.'"></textarea>
+          <textarea id="uncertainty" placeholder="Write anything unclear, or 'None observed.'">None observed.</textarea>
         </div>
       </div>
     </section>
@@ -405,7 +405,7 @@
         sample_id: sampleId,
         gold_label_version: '0.1.0',
         label_type: 'human_video_observed_gold',
-        tool_version: 'simple-labeling-tool-0.2.1',
+        tool_version: 'simple-labeling-tool-0.2.2',
         labeler_id: value('labelerId'),
         adjudicated: false,
         source_files_used: ['video_only'],
@@ -482,6 +482,15 @@
       status.textContent = errors.length
         ? `Please fix these items before export:\n- ${errors.join('\n- ')}`
         : 'Label check passed. You can export JSON and Markdown.';
+    }
+
+    function resetValidationStatus() {
+      const status = document.getElementById('validationStatus');
+      if (status && !status.hidden) {
+        status.hidden = true;
+        status.textContent = '';
+        clearInvalidStepMarkers();
+      }
     }
 
     function validateCurrentLabel() {
@@ -656,6 +665,9 @@ ${wf.uncertainty.length ? wf.uncertainty.map((item) => `- ${item}`).join('\n') :
       link.remove();
       URL.revokeObjectURL(link.href);
     }
+
+    document.addEventListener('input', resetValidationStatus);
+    document.addEventListener('change', resetValidationStatus);
 
     addStep();
   </script>

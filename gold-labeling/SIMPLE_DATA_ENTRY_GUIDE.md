@@ -10,7 +10,7 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
-The current helper tool version is shown at the top of the page. Use version `0.2.1` or newer.
+The current helper tool version is shown at the top of the page. Use version `0.2.2` or newer.
 
 ## Your Job
 
@@ -130,7 +130,7 @@ If you already had the helper tool open from an earlier attempt:
 
 1. Close that browser tab.
 2. Open `simple-labeling-tool.html` again from the folder.
-3. Check that the top of the page says `Version 0.2.1` or newer.
+3. Check that the top of the page says `Version 0.2.2` or newer.
 4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
