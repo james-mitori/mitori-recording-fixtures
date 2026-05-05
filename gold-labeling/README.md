@@ -28,22 +28,27 @@ Use these templates:
 - `templates/workflow_gold_label.template.json`
 - `templates/workflow_gold_label.template.md`
 
-For data-entry workers, use the simpler helper tool instead of editing these templates by hand:
+## Labeling Tool
+
+Use `labeling-workstation.html`. It's a single HTML file — no install, no internet required after the page loads. Open it in Chrome.
+
+The first time you open it, a 3-minute interactive tour explains the keyboard rhythm (`A` to start a step, type with chip starters, `S` to finish + advance to the next), the timeline track, and the wrap-up + export flow. You can re-launch the tour any time from the **Tour** button in the topbar. The **Guide** button next to it covers the rubric and exception types.
+
+Drafts autosave to your browser per video ID — your work survives a refresh, but you'll need to re-pick the local video file (browsers can't persist files across reloads).
+
+If you're training someone, see [`TRAINING_SCRIPT.md`](TRAINING_SCRIPT.md) — a 75–90 minute virtual trainer runbook with a worked example using `video-001-clean-customer-update.mp4`.
+
+The earlier helper is kept for in-flight workers:
 
 - `simple-labeling-tool.html`
 - `SIMPLE_DATA_ENTRY_GUIDE.md`
 - `WINDOWS_VIDEO_PLAYBACK_GUIDE.md`
 - `AI_ASSISTED_LABELING_DESIGN.md`
-
-The helper opens in a browser, lets the worker fill out guided fields, checks for missing required fields, and exports the JSON/Markdown files. Workers can use the internal video player or Windows Media Player side by side.
-
-For the video 001 redo, use:
-
-- `WORKER_REDO_VIDEO_001_INSTRUCTIONS.md`
+- `WORKER_REDO_VIDEO_001_INSTRUCTIONS.md` (uses the simple tool)
 
 ## Labeling Method
 
-Use `simple-labeling-tool.html`. Watch each video at least twice. The helper supports either the internal video player or Windows Media Player side by side with manual timestamp entry.
+Watch each video at least twice. The workstation supports either its built-in player or Windows Media Player side-by-side with manual timestamp entry.
 
 First pass:
 
