@@ -27,14 +27,14 @@ gold-labeling/simple-labeling-tool.html
 The top of the page should say:
 
 ```text
-Version 0.2.0
+Version 0.2.1
 ```
 
 If you already had the helper open:
 
 1. Close the old browser tab.
 2. Open `simple-labeling-tool.html` again.
-3. Check that it says `Version 0.2.0`.
+3. Check that it says `Version 0.2.1`.
 4. If it still shows an older version, press `Ctrl` + `F5`.
 
 ## What To Do Again
