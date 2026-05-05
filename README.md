@@ -20,13 +20,29 @@ Workers should complete Videos 1, 2, and 3 unless told otherwise.
 
 ## Gold Labeling
 
-After recordings are complete, human labelers can create reference workflow labels from the videos.
+After recordings are complete, human labelers create reference workflow labels from the videos.
 
-Start here:
+### Fastest Labeler Download
+
+Download the ready-made labeler pack:
+
+[mitori-gold-labeler-pack.zip](worker-packages/mitori-gold-labeler-pack.zip)
+
+After downloading, extract the zip and open:
+
+```text
+labeling-workstation.html
+```
+
+A 3-minute interactive tour runs automatically the first time. `START_HERE.txt` has the golden rules on one page.
+
+### More Detail
+
+For the full method, rubric, templates, and adjudication notes:
 
 [gold-labeling/README.md](gold-labeling/README.md)
 
-The recommended labeling tool is the workstation — single HTML file, runs locally, includes a 3-minute interactive tour the first time it's opened:
+The recommended tool is the workstation — single HTML file, runs locally, includes the in-tool tour:
 
 - [gold-labeling/labeling-workstation.html](gold-labeling/labeling-workstation.html)
 - [gold-labeling/TRAINING_SCRIPT.md](gold-labeling/TRAINING_SCRIPT.md) — virtual trainer runbook
