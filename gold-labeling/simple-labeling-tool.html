@@ -7,144 +7,226 @@
   <style>
     :root {
       color-scheme: light;
-      font-family: Arial, Helvetica, sans-serif;
-      --border: #c9d1d9;
-      --bg: #f6f8fa;
-      --text: #1f2328;
-      --muted: #59636e;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --panel-soft: #f9fafb;
+      --text: #18202b;
+      --muted: #647084;
+      --border: #d6dce5;
+      --border-strong: #aeb8c7;
       --blue: #0969da;
+      --blue-soft: #e9f3ff;
       --green: #1a7f37;
+      --green-soft: #eaf7ed;
       --red: #cf222e;
-      --red-bg: #fff1f1;
-      --green-bg: #dafbe1;
-      --blue-bg: #ddf4ff;
+      --red-soft: #fff1f1;
+      --amber-soft: #fff8dc;
+      --shadow: 0 10px 30px rgba(24, 32, 43, 0.12);
+    }
+    * {
+      box-sizing: border-box;
     }
     body {
       margin: 0;
       color: var(--text);
-      background: white;
-    }
-    header {
-      padding: 18px 24px;
       background: var(--bg);
+      font-size: 14px;
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 14px;
+      background: var(--panel);
       border-bottom: 1px solid var(--border);
     }
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
     h1 {
-      margin: 0 0 6px;
-      font-size: 24px;
+      margin-bottom: 2px;
+      font-size: 19px;
+      letter-spacing: 0;
     }
     h2 {
-      margin: 24px 0 10px;
-      font-size: 18px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin-bottom: 8px;
+      font-size: 14px;
+      letter-spacing: 0;
     }
     p {
-      margin: 6px 0;
+      margin-bottom: 8px;
       color: var(--muted);
       line-height: 1.45;
     }
     main {
-      max-width: 1760px;
-      margin: 0 auto;
-      padding: 16px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 10px 56px 18px 14px;
     }
     .workspace {
       display: grid;
-      grid-template-columns: minmax(660px, 1.25fr) minmax(520px, 0.75fr);
-      gap: 18px;
+      grid-template-columns: minmax(760px, 3fr) minmax(360px, 1.15fr);
+      gap: 12px;
       align-items: start;
     }
     body.theater .workspace {
-      grid-template-columns: minmax(820px, 1.45fr) minmax(420px, 0.55fr);
-    }
-    body.external-mode main {
-      max-width: 960px;
+      grid-template-columns: minmax(900px, 4fr) minmax(320px, 1fr);
     }
     body.external-mode .workspace {
-      display: block;
+      grid-template-columns: minmax(720px, 1fr);
+      max-width: 1120px;
+      margin: 0 auto;
     }
-    body.external-mode .video-station {
-      display: none;
-    }
+    body.external-mode .video-station,
     body.external-mode .video-time-only {
       display: none;
     }
-    .panel {
+    .panel,
+    .section-panel {
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px;
-      background: white;
+      background: var(--panel);
+    }
+    .panel {
+      padding: 12px;
+    }
+    .section-panel {
+      overflow: hidden;
+    }
+    .section-panel summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      list-style: none;
+      border-bottom: 1px solid transparent;
+    }
+    .section-panel summary::-webkit-details-marker {
+      display: none;
+    }
+    .section-panel[open] summary {
+      border-bottom-color: var(--border);
+    }
+    .section-body {
+      padding: 12px;
     }
     .video-station {
       position: sticky;
-      top: 12px;
-      max-height: calc(100vh - 24px);
+      top: 10px;
+      max-height: calc(100vh - 20px);
       overflow: auto;
+      padding: 10px;
     }
-    .label-column {
-      display: grid;
-      gap: 18px;
-    }
-    .panel-head {
+    .video-head,
+    .panel-head,
+    .rail-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
-    .panel-head h2 {
-      margin-top: 0;
+    .video-head h2,
+    .panel-head h2,
+    .rail-head h2 {
+      margin: 0;
     }
-    .mode-pill {
+    .file-strip {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .file-strip input {
+      min-width: 0;
+    }
+    .video-shell {
+      background: #111820;
+      border: 1px solid #283445;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    video {
+      width: 100%;
+      max-height: calc(100vh - 238px);
+      min-height: 420px;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      background: #070b10;
+      border-radius: 6px;
+      display: block;
+    }
+    .mode-pill,
+    .hint {
       border: 1px solid var(--border);
       border-radius: 999px;
       color: var(--muted);
       font-size: 12px;
       padding: 4px 8px;
       white-space: nowrap;
+      background: var(--panel-soft);
     }
-    .video-shell {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 8px;
-    }
-    video {
-      width: 100%;
-      max-height: 72vh;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
-      background: #111;
-      border-radius: 6px;
-      display: block;
+    .hint {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      font-weight: 800;
+      cursor: help;
     }
     label {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       margin: 10px 0 4px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 13px;
     }
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       width: 100%;
-      box-sizing: border-box;
-      padding: 8px;
       border: 1px solid var(--border);
       border-radius: 6px;
+      padding: 8px 9px;
+      color: var(--text);
+      background: white;
       font: inherit;
     }
     textarea {
-      min-height: 72px;
+      min-height: 76px;
       resize: vertical;
     }
     button {
       border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
       border-radius: 6px;
       padding: 8px 10px;
-      font-weight: 700;
+      color: var(--text);
+      background: white;
+      font: inherit;
+      font-weight: 800;
       cursor: pointer;
     }
-    button:hover {
+    button:hover,
+    button:focus-visible {
       border-color: var(--blue);
+      outline: none;
     }
     button.primary {
       color: white;
@@ -157,76 +239,94 @@
       border-color: var(--green);
     }
     button.timestamp-button {
-      background: var(--blue-bg);
-      border-color: var(--blue);
       color: #0550ae;
+      background: var(--blue-soft);
+      border-color: #8cc8ff;
     }
     button.ghost-danger {
       color: var(--red);
       border-color: #ffcecb;
+      background: white;
     }
     button.chip {
       border-radius: 999px;
-      padding: 6px 10px;
+      padding: 5px 9px;
       font-size: 12px;
-      font-weight: 700;
-      background: var(--bg);
+      background: var(--panel-soft);
     }
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-    .toolbar {
+    .toolbar,
+    .control-row,
+    .step-actions,
+    .step-footer,
+    .quick-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin: 10px 0;
       align-items: center;
     }
-    .player-controls {
+    .control-deck {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .control-group {
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      margin: 10px 0;
-    }
-    .player-controls button,
-    .player-controls select {
-      min-height: 38px;
-    }
-    .player-status {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin: 10px 0;
-      font-size: 13px;
-    }
-    .status-chip {
-      background: var(--bg);
+      align-items: center;
+      padding: 10px;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 8px;
+      border-radius: 8px;
+      background: var(--panel-soft);
     }
-    .time {
-      font-weight: 700;
-      color: var(--blue);
+    .control-group-title {
+      width: 100%;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
     }
-    .sticky-action-bar {
-      position: sticky;
-      top: 8px;
-      z-index: 10;
-      border-color: var(--blue);
-      box-shadow: 0 8px 24px rgba(31, 35, 40, 0.12);
-    }
-    .sticky-action-bar h2 {
-      margin-top: 0;
-    }
+    .status-grid,
     .sticky-status {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      margin: 8px 0;
+    }
+    .status-grid {
+      margin-top: 10px;
+    }
+    .status-chip {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--panel-soft);
       font-size: 13px;
+    }
+    .time {
+      color: var(--blue);
+      font-weight: 900;
+    }
+    .label-column {
+      display: grid;
+      gap: 10px;
+      max-height: calc(100vh - 20px);
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .sticky-action-bar {
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      border-color: #8cc8ff;
+      background: #fbfdff;
+      box-shadow: var(--shadow);
     }
     .manual-time-row {
       display: grid;
@@ -238,20 +338,50 @@
     .manual-time-row label {
       margin-top: 0;
     }
+    .sticky-action-bar .sticky-status {
+      grid-template-columns: 1fr 1fr;
+    }
+    .sticky-action-bar .sticky-status .status-chip:last-child {
+      grid-column: 1 / -1;
+    }
+    .sticky-action-bar .manual-time-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .sticky-action-bar .manual-time-row > div {
+      grid-column: 1 / -1;
+    }
+    .help {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel-soft);
+      color: var(--muted);
+    }
+    .help.compact {
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .step-list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
     .step {
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 12px;
-      margin: 12px 0;
-      background: #fff;
+      padding: 10px;
+      margin: 10px 0;
+      background: white;
     }
     .step.active {
       border-color: var(--blue);
-      box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.16);
+      box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.15);
     }
     .step.invalid {
       border-color: var(--red);
-      background: var(--red-bg);
+      background: var(--red-soft);
     }
     .step-title {
       display: flex;
@@ -260,49 +390,33 @@
       gap: 8px;
       margin-bottom: 8px;
     }
-    .step-actions {
-      display: flex;
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
+    }
+    .inline-button {
+      margin-top: 4px;
+      padding: 5px 7px;
+      font-size: 12px;
     }
     .quick-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
       margin: 6px 0 8px;
-      align-items: center;
     }
     .quick-label {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 700;
-      margin-right: 2px;
+      font-weight: 800;
     }
     .step-footer {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-      padding-top: 12px;
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 1px solid var(--border);
     }
     .small {
       color: var(--muted);
       font-size: 12px;
-      font-weight: 400;
-    }
-    .help {
-      padding: 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
-    .inline-button {
-      margin-top: 4px;
-      font-size: 12px;
-      padding: 5px 7px;
+      font-weight: 500;
     }
     .status {
       margin-top: 10px;
@@ -312,25 +426,26 @@
       white-space: pre-wrap;
     }
     .status.ok {
-      background: var(--green-bg);
-      border-color: var(--green);
       color: var(--green);
+      background: var(--green-soft);
+      border-color: var(--green);
     }
     .status.error {
-      background: var(--red-bg);
-      border-color: var(--red);
       color: var(--red);
+      background: var(--red-soft);
+      border-color: var(--red);
     }
     .step-overview {
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 12px;
+      background: white;
     }
     .step-overview-row {
       display: grid;
-      grid-template-columns: 54px 86px 1fr;
+      grid-template-columns: 54px 88px 1fr;
       gap: 8px;
       align-items: center;
       width: 100%;
@@ -339,21 +454,72 @@
       border-radius: 0;
       padding: 8px;
       text-align: left;
-      font-weight: 400;
+      font-weight: 500;
     }
     .step-overview-row:last-child {
       border-bottom: 0;
     }
     .step-overview-row.active {
-      background: var(--blue-bg);
-      font-weight: 700;
+      background: var(--blue-soft);
+      font-weight: 800;
     }
     .truncate {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    @media (max-width: 900px) {
+    .notes-drawer {
+      position: fixed;
+      top: 66px;
+      right: 0;
+      z-index: 30;
+      width: 420px;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 80px);
+      transform: translateX(calc(100% - 42px));
+      transition: transform 160ms ease;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      filter: drop-shadow(-10px 12px 24px rgba(24, 32, 43, 0.18));
+    }
+    .notes-drawer:hover,
+    .notes-drawer:focus-within,
+    .notes-drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-tab {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      border: 1px solid var(--border-strong);
+      border-right: 0;
+      border-radius: 8px 0 0 8px;
+      background: var(--amber-soft);
+      padding: 12px 8px;
+      font-weight: 900;
+      text-align: center;
+      cursor: pointer;
+    }
+    .drawer-body {
+      overflow: auto;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px 0 0 8px;
+      padding: 12px;
+      background: white;
+    }
+    .drawer-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .notes-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .notes-grid textarea {
+      min-height: 92px;
+    }
+    @media (max-width: 1180px) {
       .workspace {
         grid-template-columns: 1fr;
       }
@@ -361,187 +527,270 @@
         position: static;
         max-height: none;
       }
-      .player-controls,
-      .player-status,
+      .label-column {
+        max-height: none;
+      }
+      video {
+        min-height: 320px;
+        max-height: 70vh;
+      }
+    }
+    @media (max-width: 760px) {
+      .app-header,
+      .video-head,
+      .panel-head,
+      .rail-head,
+      .step-list-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      main {
+        padding: 8px;
+      }
+      .control-deck,
+      .row,
+      .time-row,
+      .status-grid,
       .sticky-status,
       .manual-time-row {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
+      }
+      .notes-drawer {
+        position: static;
+        width: auto;
+        max-width: none;
+        max-height: none;
+        transform: none;
+        display: block;
+        filter: none;
+        margin: 8px;
+      }
+      .drawer-tab {
+        writing-mode: horizontal-tb;
+        transform: none;
+        border: 1px solid var(--border);
+        border-radius: 8px 8px 0 0;
+      }
+      .drawer-body {
+        border-radius: 0 0 8px 8px;
       }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Mitori Gold Label Helper</h1>
-    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.4.0.</p>
+  <header class="app-header">
+    <div>
+      <h1>Mitori Gold Label Helper</h1>
+      <p>Video-first workflow labeling. Describe only what is visible. Version 0.5.0.</p>
+    </div>
+    <span class="mode-pill">Human observed labels</span>
   </header>
 
   <main>
     <div class="workspace">
-      <section class="panel video-station">
-        <div class="panel-head">
-          <h2>1. Video Workstation</h2>
-          <span class="mode-pill">Optional internal player</span>
+      <section class="panel video-station" aria-labelledby="videoTitle">
+        <div class="video-head">
+          <div>
+            <h2 id="videoTitle">Video Workstation <span class="hint" title="Use this area to play the recording and stamp times onto the active step.">?</span></h2>
+            <p>Keep the recording large. Use the compact controls below the player, or switch to side-by-side mode if you prefer Windows Media Player.</p>
+          </div>
+          <span class="mode-pill">Primary workspace</span>
         </div>
-        <input id="videoFile" type="file" accept="video/*">
+
+        <div class="file-strip">
+          <input id="videoFile" type="file" accept="video/*" title="Load the local video file. The file stays on this computer.">
+          <button id="hideVideoButton" type="button" onclick="toggleExternalMode()" title="Hide the internal video and use Windows Media Player beside this helper.">Side-by-side mode</button>
+        </div>
+
         <div class="video-shell">
           <video id="video" controls playsinline></video>
         </div>
-        <div class="player-status">
+
+        <div class="status-grid">
           <div class="status-chip">Current <span id="currentTime" class="time">0.00s</span></div>
           <div class="status-chip">Duration <span id="durationTime" class="time">0.00s</span></div>
           <div class="status-chip">Active <span id="activeStepLabel" class="time">Step 1</span></div>
         </div>
-        <div class="player-controls">
-          <button type="button" onclick="togglePlay()">Play/Pause</button>
-          <button type="button" onclick="seekBy(-5)">Back 5s</button>
-          <button type="button" onclick="seekBy(-1)">Back 1s</button>
-          <button type="button" onclick="seekBy(1)">Forward 1s</button>
-          <button type="button" onclick="seekBy(5)">Forward 5s</button>
-          <button class="timestamp-button" type="button" onclick="captureActiveStepStart()">Set start from video time</button>
-          <button class="timestamp-button" type="button" onclick="captureActiveStepEnd()">Set end from video time</button>
-          <button type="button" onclick="toggleTheaterMode()">Make video wider</button>
-          <button type="button" onclick="requestVideoFullscreen()">Fullscreen video</button>
-          <button id="hideVideoButton" type="button" onclick="toggleExternalMode()">Hide internal video for side-by-side</button>
+
+        <div class="control-deck">
+          <div class="control-group" aria-label="Video controls">
+            <div class="control-group-title">Playback</div>
+            <button type="button" onclick="togglePlay()" title="Play or pause the internal video. Shortcut: Space.">Play / Pause</button>
+            <button type="button" onclick="seekBy(-5)" title="Move the video back 5 seconds.">Back 5s</button>
+            <button type="button" onclick="seekBy(-1)" title="Move the video back 1 second.">Back 1s</button>
+            <button type="button" onclick="seekBy(1)" title="Move the video forward 1 second.">Forward 1s</button>
+            <button type="button" onclick="seekBy(5)" title="Move the video forward 5 seconds.">Forward 5s</button>
+            <button type="button" onclick="requestVideoFullscreen()" title="Open the internal player fullscreen.">Fullscreen</button>
+            <button type="button" onclick="toggleTheaterMode()" title="Give more width to the video column.">Wider video</button>
+          </div>
+
+          <div class="control-group" aria-label="Timestamp controls">
+            <div class="control-group-title">Stamp active step</div>
+            <button class="timestamp-button" type="button" onclick="captureActiveStepStart()" title="Put the current video time into the active step start time. Shortcut: A.">Set step start</button>
+            <button class="timestamp-button" type="button" onclick="captureActiveStepEnd()" title="Put the current video time into the active step end time. Shortcut: S.">Set step end</button>
+            <button class="primary" type="button" onclick="finishActiveStepAndAddNext()" title="Set this step end time, create the next step, and copy the same time as the next step start.">Finish + next</button>
+            <button class="timestamp-button" type="button" onclick="setTime('workflowStart')" title="Use the current video time as the workflow start.">Workflow start</button>
+            <button class="timestamp-button" type="button" onclick="setTime('workflowEnd')" title="Use the current video time as the workflow end.">Workflow end</button>
+            <label class="small" for="playbackRate">Speed</label>
+            <select id="playbackRate" onchange="setPlaybackRate(this.value)" title="Slow the video down when reading fields.">
+              <option value="0.5">0.5x</option>
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+            </select>
+          </div>
         </div>
-        <div class="toolbar">
-          <button class="timestamp-button" type="button" onclick="setTime('workflowStart')">Set workflow start to current time</button>
-          <button class="timestamp-button" type="button" onclick="setTime('workflowEnd')">Set workflow end to current time</button>
-          <label class="small" for="playbackRate">Speed</label>
-          <select id="playbackRate" onchange="setPlaybackRate(this.value)">
-            <option value="0.5">0.5x</option>
-            <option value="0.75">0.75x</option>
-            <option value="1" selected>1x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-          </select>
-        </div>
-        <div class="help">
-          The internal player is optional. If it feels too small, use Windows Media Player side-by-side and click
-          <strong>Hide internal video for side-by-side</strong>. The sticky controls on the right stay visible while you fill out the form.
-        </div>
-        <h2>Step Review</h2>
-        <div id="stepOverview" class="step-overview"></div>
+
+        <details class="section-panel" open>
+          <summary>
+            <span>Step Review <span class="hint" title="Click a row to jump back to that step card in the right panel.">?</span></span>
+            <span class="mode-pill">Jump list</span>
+          </summary>
+          <div class="section-body">
+            <div id="stepOverview" class="step-overview"></div>
+          </div>
+        </details>
       </section>
 
       <div class="label-column">
-      <section class="panel sticky-action-bar">
-        <div class="panel-head">
-          <h2>Active Step Controls</h2>
-          <span id="layoutModeLabel" class="mode-pill">Internal video mode</span>
-        </div>
-        <div class="sticky-status">
-          <div class="status-chip">Active <span id="activeStepToolbarLabel" class="time">Step 1</span></div>
-          <div class="status-chip">Video time <span id="toolbarCurrentTime" class="time">0.00s</span></div>
-          <div class="status-chip">Use while scrolling</div>
-        </div>
-        <div class="toolbar">
-          <button class="video-time-only" type="button" onclick="togglePlay()">Play/Pause</button>
-          <button class="video-time-only" type="button" onclick="seekBy(-5)">Back 5s</button>
-          <button class="video-time-only" type="button" onclick="seekBy(5)">Forward 5s</button>
-          <button class="timestamp-button video-time-only" type="button" onclick="captureActiveStepStart()">Set start from video time</button>
-          <button class="timestamp-button video-time-only" type="button" onclick="captureActiveStepEnd()">Set end from video time</button>
-          <button class="primary video-time-only" type="button" onclick="finishActiveStepAndAddNext()">Finish step + add next</button>
-          <button id="externalModeButton" type="button" onclick="toggleExternalMode()">Hide internal video for side-by-side</button>
-        </div>
-        <div class="manual-time-row">
-          <div>
-            <label for="manualTime">Manual timestamp from Windows Media Player</label>
-            <input id="manualTime" placeholder="Example: 72.5, 1:12, or 01:12.50">
+        <section class="panel sticky-action-bar" aria-labelledby="activeControlsTitle">
+          <div class="rail-head">
+            <h2 id="activeControlsTitle">Active Step Controls <span class="hint" title="These controls stay visible while you scroll the step form. Click inside a step to make it active.">?</span></h2>
+            <span id="layoutModeLabel" class="mode-pill">Internal video mode</span>
           </div>
-          <button class="timestamp-button" type="button" onclick="setActiveStepStartFromManual()">Set start</button>
-          <button class="timestamp-button" type="button" onclick="setActiveStepEndFromManual()">Set end</button>
-          <button class="primary" type="button" onclick="finishActiveStepAndAddNextFromManual()">Finish + add next</button>
-        </div>
-        <p>Click inside a step to make it active. This bar stays visible so you do not need to scroll back to the video controls.</p>
-      </section>
-
-      <section class="panel">
-        <h2>2. Basic Details</h2>
-        <label for="sampleId">Video ID</label>
-        <input id="sampleId" placeholder="video-001-clean-customer-update">
-
-        <label for="labelerId">Your name or worker ID</label>
-        <input id="labelerId" placeholder="worker-001">
-
-        <label for="summary">Short summary of what happened</label>
-        <textarea id="summary" placeholder="Write 2-4 sentences. Only describe what you can see."></textarea>
-
-        <label for="completionStatus">Completion status</label>
-        <select id="completionStatus">
-          <option value="completed">completed</option>
-          <option value="partially_completed">partially_completed</option>
-          <option value="abandoned">abandoned</option>
-          <option value="interrupted_then_completed">interrupted_then_completed</option>
-          <option value="unclear">unclear</option>
-        </select>
-
-        <div class="row">
-          <div>
-            <label for="workflowStart">Workflow start time</label>
-            <input id="workflowStart" type="number" step="0.01" value="0">
-            <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowStart')">Set workflow start to current video time</button>
+          <div class="sticky-status">
+            <div class="status-chip">Active <span id="activeStepToolbarLabel" class="time">Step 1</span></div>
+            <div class="status-chip">Video time <span id="toolbarCurrentTime" class="time">0.00s</span></div>
+            <div class="status-chip">Manual time allowed</div>
           </div>
-          <div>
-            <label for="workflowEnd">Workflow end time</label>
-            <input id="workflowEnd" type="number" step="0.01" value="0">
-            <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowEnd')">Set workflow end to current video time</button>
+          <div class="toolbar">
+            <button class="video-time-only" type="button" onclick="togglePlay()">Play / Pause</button>
+            <button class="video-time-only" type="button" onclick="seekBy(-5)">Back 5s</button>
+            <button class="video-time-only" type="button" onclick="seekBy(5)">Forward 5s</button>
+            <button class="timestamp-button video-time-only" type="button" onclick="captureActiveStepStart()">Set start</button>
+            <button class="timestamp-button video-time-only" type="button" onclick="captureActiveStepEnd()">Set end</button>
+            <button class="primary video-time-only" type="button" onclick="finishActiveStepAndAddNext()">Finish + next</button>
+            <button id="externalModeButton" type="button" onclick="toggleExternalMode()">Side-by-side mode</button>
           </div>
-        </div>
+          <div class="manual-time-row">
+            <div>
+              <label for="manualTime">Manual timestamp <span class="hint" title="Use this when watching in Windows Media Player. Accepts 45, 0:45, 01:12.50, or 0:45 / 1:45.">?</span></label>
+              <input id="manualTime" placeholder="72.5, 1:12, or 0:45 / 1:45">
+            </div>
+            <button class="timestamp-button" type="button" onclick="setActiveStepStartFromManual()">Set start</button>
+            <button class="timestamp-button" type="button" onclick="setActiveStepEndFromManual()">Set end</button>
+            <button class="primary" type="button" onclick="finishActiveStepAndAddNextFromManual()">Finish + next</button>
+          </div>
+        </section>
 
-        <label for="workflowLabel">Workflow name</label>
-        <input id="workflowLabel" placeholder="Example: Update customer record in CRM">
-      </section>
+        <details class="section-panel" open>
+          <summary>
+            <span>Basic Details <span class="hint" title="Fill this once per video before exporting.">?</span></span>
+            <span class="mode-pill">Once per video</span>
+          </summary>
+          <div class="section-body">
+            <label for="sampleId">Video ID</label>
+            <input id="sampleId" placeholder="video-001-clean-customer-update">
 
-      <section class="panel">
-        <h2>3. Steps</h2>
-        <div class="help">
-          <strong>Simple rule:</strong> every step needs a start time, end time, observed action, and evidence.
-          Use plain language. Do not guess. If the worker changes several fields, create one step per field or value changed.
-        </div>
-        <button class="primary" type="button" onclick="addStep()">Add blank step at end</button>
-        <div id="steps"></div>
-      </section>
+            <label for="labelerId">Your name or worker ID</label>
+            <input id="labelerId" placeholder="worker-001">
 
-    <section class="panel">
-      <h2>4. Messy Work Notes</h2>
-      <div class="row">
-        <div>
-          <label for="interruptions">Interruptions</label>
-          <textarea id="interruptions" placeholder="Write interruptions, or 'None observed.'">None observed.</textarea>
-        </div>
-        <div>
-          <label for="rework">Rework or corrections</label>
-          <textarea id="rework" placeholder="Write rework/corrections, or 'None observed.'">None observed.</textarea>
-        </div>
-      </div>
-      <div class="row">
-        <div>
-          <label for="discrepancies">Observed discrepancies</label>
-          <textarea id="discrepancies" placeholder="Write discrepancies, or 'None observed.'">None observed.</textarea>
-        </div>
-        <div>
-          <label for="uncertainty">Uncertainty</label>
-          <textarea id="uncertainty" placeholder="Write anything unclear, or 'None observed.'">None observed.</textarea>
-        </div>
-      </div>
-    </section>
+            <label for="summary">Short summary <span class="hint" title="Write 2-4 sentences about what visibly happened. Do not judge whether it was correct.">?</span></label>
+            <textarea id="summary" placeholder="Write 2-4 sentences. Only describe what you can see."></textarea>
 
-    <section class="panel">
-      <h2>5. Export</h2>
-      <div class="toolbar">
-        <button type="button" onclick="validateCurrentLabel()">Check Label Before Export</button>
-        <button class="success" type="button" onclick="downloadJson()">Export JSON</button>
-        <button class="success" type="button" onclick="downloadMarkdown()">Export Markdown</button>
-        <button type="button" onclick="saveDraft()">Save Draft In Browser</button>
-        <button type="button" onclick="loadDraft()">Load Draft</button>
-      </div>
-      <div id="validationStatus" class="status" hidden></div>
-      <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page. The export will stop if required fields are missing.</p>
-    </section>
+            <label for="completionStatus">Completion status</label>
+            <select id="completionStatus">
+              <option value="completed">completed</option>
+              <option value="partially_completed">partially_completed</option>
+              <option value="abandoned">abandoned</option>
+              <option value="interrupted_then_completed">interrupted_then_completed</option>
+              <option value="unclear">unclear</option>
+            </select>
+
+            <div class="row">
+              <div>
+                <label for="workflowStart">Workflow start</label>
+                <input id="workflowStart" type="number" step="0.01" value="0">
+                <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowStart')">Use video time</button>
+              </div>
+              <div>
+                <label for="workflowEnd">Workflow end</label>
+                <input id="workflowEnd" type="number" step="0.01" value="0">
+                <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowEnd')">Use video time</button>
+              </div>
+            </div>
+
+            <label for="workflowLabel">Workflow name <span class="hint" title="Use a short observed label, such as Update customer record in CRM.">?</span></label>
+            <input id="workflowLabel" placeholder="Example: Update customer record in CRM">
+          </div>
+        </details>
+
+        <section class="panel">
+          <div class="step-list-head">
+            <h2>Steps <span class="hint" title="Each meaningful observed action needs a start time, end time, action, screen context, and visible evidence.">?</span></h2>
+            <button class="primary" type="button" onclick="addStep()">Add step</button>
+          </div>
+          <div class="help compact">
+            One meaningful action per step. Split field updates into separate steps. Write what is visible, not what should have happened.
+          </div>
+          <div id="steps"></div>
+        </section>
+
+        <details class="section-panel">
+          <summary>
+            <span>Export <span class="hint" title="Check the label first. Fix any red messages, then export both JSON and Markdown.">?</span></span>
+            <span class="mode-pill">Finish</span>
+          </summary>
+          <div class="section-body">
+            <div class="toolbar">
+              <button type="button" onclick="validateCurrentLabel()">Check Label Before Export</button>
+              <button class="success" type="button" onclick="downloadJson()">Export JSON</button>
+              <button class="success" type="button" onclick="downloadMarkdown()">Export Markdown</button>
+              <button type="button" onclick="saveDraft()">Save Draft</button>
+              <button type="button" onclick="loadDraft()">Load Draft</button>
+            </div>
+            <div id="validationStatus" class="status" hidden></div>
+            <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page.</p>
+          </div>
+        </details>
       </div>
     </div>
   </main>
+
+  <aside id="notesDrawer" class="notes-drawer" onmouseenter="openNotesDrawer()" onmouseleave="closeNotesDrawer()" onfocusin="openNotesDrawer()" onfocusout="closeNotesDrawerIfFocusLeaves(event)" aria-label="Exceptions and uncertainty notes">
+    <button class="drawer-tab" type="button" onclick="toggleNotesDrawer()" title="Open notes for interruptions, rework, discrepancies, and uncertainty.">Notes</button>
+    <div class="drawer-body">
+      <div class="panel-head">
+        <h2>Exceptions &amp; Uncertainty <span class="hint" title="Use this drawer for messy parts of real work: unrelated interruptions, visible corrections, mismatches, and anything unclear.">?</span></h2>
+        <span class="mode-pill">Pauses on open</span>
+      </div>
+      <div class="drawer-controls">
+        <button type="button" onclick="togglePlay()">Play / Pause</button>
+        <button type="button" onclick="seekBy(-5)">Back 5s</button>
+        <button type="button" onclick="seekBy(5)">Forward 5s</button>
+      </div>
+      <p>Leave `None observed.` when there is nothing to report. These notes help benchmark messy real work without mixing them into the normal step list.</p>
+      <div class="notes-grid">
+        <div>
+          <label for="interruptions">Interruptions <span class="hint" title="Unrelated activity inside or between workflow steps, such as checking another email or switching to a different task.">?</span></label>
+          <textarea id="interruptions" placeholder="Write interruptions, or 'None observed.'">None observed.</textarea>
+        </div>
+        <div>
+          <label for="rework">Rework or corrections <span class="hint" title="Visible corrections, repeated attempts, changed values, or undo/redo behavior.">?</span></label>
+          <textarea id="rework" placeholder="Write rework/corrections, or 'None observed.'">None observed.</textarea>
+        </div>
+        <div>
+          <label for="discrepancies">Observed discrepancies <span class="hint" title="Visible mismatches, such as source data saying one value while the target system shows another.">?</span></label>
+          <textarea id="discrepancies" placeholder="Write discrepancies, or 'None observed.'">None observed.</textarea>
+        </div>
+        <div>
+          <label for="uncertainty">Uncertainty <span class="hint" title="Anything hard to read, ambiguous, off-screen, or not confidently observable.">?</span></label>
+          <textarea id="uncertainty" placeholder="Write anything unclear, or 'None observed.'">None observed.</textarea>
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <script>
     const video = document.getElementById('video');
@@ -553,6 +802,7 @@
     const stepOverview = document.getElementById('stepOverview');
     const steps = document.getElementById('steps');
     let activeStep = null;
+    let notesDrawerWasPlaying = false;
 
     document.getElementById('videoFile').addEventListener('change', (event) => {
       const file = event.target.files[0];
@@ -617,8 +867,8 @@
       const externalButton = document.getElementById('externalModeButton');
       const hideButton = document.getElementById('hideVideoButton');
       if (label) label.textContent = externalMode ? 'Side-by-side mode' : 'Internal video mode';
-      if (externalButton) externalButton.textContent = externalMode ? 'Show internal video' : 'Hide internal video for side-by-side';
-      if (hideButton) hideButton.textContent = externalMode ? 'Show internal video' : 'Hide internal video for side-by-side';
+      if (externalButton) externalButton.textContent = externalMode ? 'Show internal video' : 'Side-by-side mode';
+      if (hideButton) hideButton.textContent = externalMode ? 'Show internal video' : 'Side-by-side mode';
     }
 
     function requestVideoFullscreen() {
@@ -666,21 +916,21 @@
             <button class="ghost-danger" type="button" onclick="event.stopPropagation(); removeStep(this)">Remove step</button>
           </div>
         </div>
-        <div class="row">
+        <div class="time-row">
           <div>
-            <label>Start time</label>
+            <label>Start time <span class="hint" title="When this visible action starts. Use the active controls or enter seconds manually.">?</span></label>
             <input class="step-start" type="number" step="0.01" value="${data.start_time_sec ?? ''}">
-            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-start')">Set start to current video time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-start')">Use video time</button>
           </div>
           <div>
-            <label>End time</label>
+            <label>End time <span class="hint" title="When this visible action finishes or the next action starts.">?</span></label>
             <input class="step-end" type="number" step="0.01" value="${data.end_time_sec ?? ''}">
-            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-end')">Set end to current video time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-end')">Use video time</button>
           </div>
         </div>
-        <label>Observed action</label>
+        <label>Observed action <span class="hint" title="Write what the worker visibly did. Do not infer intent.">?</span></label>
         <div class="quick-row" aria-label="Observed action starters">
-          <span class="quick-label">Quick starters:</span>
+          <span class="quick-label">Starters:</span>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Clicked ')">Clicked</button>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Typed ')">Typed</button>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Selected ')">Selected</button>
@@ -694,11 +944,11 @@
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Saved ')">Saved</button>
         </div>
         <textarea class="step-action" placeholder="What did the worker do?">${escapeHtml(data.observed_label || '')}</textarea>
-        <label>Screen/app context</label>
+        <label>Screen/app context <span class="hint" title="Name the visible app, page, document, or screen area.">?</span></label>
         <input class="step-context" placeholder="Example: Excel, Chrome CRM page, File Explorer" value="${escapeHtml(data.screen_context || '')}">
-        <label>Evidence you can see</label>
+        <label>Evidence you can see <span class="hint" title="Quote or describe the visible field, value, message, button, row, or page state supporting this step.">?</span></label>
         <div class="quick-row" aria-label="Evidence starters">
-          <span class="quick-label">Quick starters:</span>
+          <span class="quick-label">Starters:</span>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Field shows ')">Field shows</button>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Page shows ')">Page shows</button>
           <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Message says ')">Message says</button>
@@ -708,21 +958,21 @@
         <textarea class="step-evidence" placeholder="Example: Account Owner field shows Priya Shah.">${escapeHtml(data.evidence_text || '')}</textarea>
         <div class="row">
           <div>
-            <label>Confidence</label>
+            <label>Confidence <span class="hint" title="Use high confidence when action and visible evidence are clear. Lower it if the screen is hard to read.">?</span></label>
             <select class="step-confidence">
               ${confidenceOptions(data.confidence)}
             </select>
           </div>
           <div>
-            <label>Uncertainty</label>
+            <label>Uncertainty <span class="hint" title="Leave blank if there is no uncertainty for this specific step.">?</span></label>
             <input class="step-uncertainty" placeholder="Leave blank if none" value="${escapeHtml(data.uncertainty || '')}">
           </div>
         </div>
         <div class="step-footer">
-          <button class="primary" type="button" onclick="event.stopPropagation(); addStepAfter(this)">Add next step below</button>
-          <button class="primary" type="button" onclick="event.stopPropagation(); finishStepAndAddNextFromButton(this)">Finish this step + add next</button>
-          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-start')">Set this step start to current time</button>
-          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-end')">Set this step end to current time</button>
+          <button class="primary" type="button" onclick="event.stopPropagation(); finishStepAndAddNextFromButton(this)">Finish + next</button>
+          <button type="button" onclick="event.stopPropagation(); addStepAfter(this)">Blank next step</button>
+          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-start')">Start = video time</button>
+          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-end')">End = video time</button>
         </div>
       `;
       if (afterStep && afterStep.parentElement === steps) {
@@ -819,6 +1069,37 @@
       if (numbers.some((number) => !Number.isFinite(number))) return null;
       if (numbers.length === 2) return numbers[0] * 60 + numbers[1];
       return numbers[0] * 3600 + numbers[1] * 60 + numbers[2];
+    }
+
+    function openNotesDrawer() {
+      const drawer = document.getElementById('notesDrawer');
+      if (!drawer || drawer.classList.contains('open')) return;
+      notesDrawerWasPlaying = Boolean(video.src) && !video.paused && !video.ended;
+      if (notesDrawerWasPlaying) video.pause();
+      drawer.classList.add('open');
+    }
+
+    function closeNotesDrawer() {
+      const drawer = document.getElementById('notesDrawer');
+      if (!drawer) return;
+      drawer.classList.remove('open');
+      if (notesDrawerWasPlaying && video.src) {
+        video.play().catch(() => {});
+      }
+      notesDrawerWasPlaying = false;
+    }
+
+    function closeNotesDrawerIfFocusLeaves(event) {
+      if (!event.currentTarget.contains(event.relatedTarget)) closeNotesDrawer();
+    }
+
+    function toggleNotesDrawer() {
+      const drawer = document.getElementById('notesDrawer');
+      if (drawer && drawer.classList.contains('open')) {
+        closeNotesDrawer();
+      } else {
+        openNotesDrawer();
+      }
     }
 
     function removeStep(button) {
@@ -939,7 +1220,7 @@
         sample_id: sampleId,
         gold_label_version: '0.1.0',
         label_type: 'human_video_observed_gold',
-        tool_version: 'simple-labeling-tool-0.4.0',
+        tool_version: 'simple-labeling-tool-0.5.0',
         labeler_id: value('labelerId'),
         adjudicated: false,
         source_files_used: ['video_only'],

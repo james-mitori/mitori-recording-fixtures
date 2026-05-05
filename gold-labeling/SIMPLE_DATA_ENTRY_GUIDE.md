@@ -10,7 +10,7 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
-The current helper tool version is shown at the top of the page. Use version `0.4.0` or newer.
+The current helper tool version is shown at the top of the page. Use version `0.5.0` or newer.
 
 ## Your Job
 
@@ -70,7 +70,7 @@ If you already had the helper tool open from an earlier attempt:
 
 1. Close that browser tab.
 2. Open `simple-labeling-tool.html` again from the folder.
-3. Check that the top of the page says `Version 0.4.0` or newer.
+3. Check that the top of the page says `Version 0.5.0` or newer.
 4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
@@ -98,8 +98,8 @@ If the internal video is too small:
 1. Open the video in Windows Media Player.
 2. Put Windows Media Player on one side of the screen.
 3. Put the helper tool on the other side of the screen.
-4. In the helper tool, click `Hide internal video for side-by-side`.
-5. Type the timestamp you see in Windows Media Player into `Manual timestamp from Windows Media Player`. The helper accepts `45`, `0:45`, or `0:45 / 1:45`.
+4. In the helper tool, click `Side-by-side mode`.
+5. Type the timestamp you see in Windows Media Player into `Manual timestamp`. The helper accepts `45`, `0:45`, or `0:45 / 1:45`.
 
 The tool will fill in the video ID from the file name when possible. Check that it is correct.
 
@@ -119,7 +119,7 @@ Use these controls:
 - `Back 5s`, `Back 1s`, `Forward 1s`, and `Forward 5s` move around the video.
 - `Set start from video time` fills the start time for the highlighted step.
 - `Set end from video time` fills the end time for the highlighted step.
-- `Finish step + add next` fills the active step end time, creates the next step, and sets the next step start time.
+- `Finish + next` fills the active step end time, creates the next step, and sets the next step start time.
 - `Set workflow start to current time` and `Set workflow end to current time` fill the whole workflow times.
 - `Make video wider` gives the video more space.
 - `Fullscreen video` opens the video larger.
@@ -127,10 +127,10 @@ Use these controls:
 
 If you use Windows Media Player side by side:
 
-- Type the Media Player timestamp into `Manual timestamp from Windows Media Player`.
+- Type the Media Player timestamp into `Manual timestamp`.
 - Click `Set start` to fill the active step start time.
 - Click `Set end` to fill the active step end time.
-- Click `Finish + add next` to finish the current step and create the next one.
+- Click `Finish + next` to finish the current step and create the next one.
 
 Click inside a step to make it the active step. The active step is highlighted.
 
@@ -185,12 +185,12 @@ For each step:
 
 1. Pause where the step starts.
 2. Click inside the step so it is highlighted.
-3. Click `Set start from video time`, or type the timestamp into `Manual timestamp from Windows Media Player` and click `Set start`.
+3. Click `Set start from video time`, or type the timestamp into `Manual timestamp` and click `Set start`.
 4. Play until the step ends.
-5. Click `Set end from video time`, or type the timestamp into `Manual timestamp from Windows Media Player` and click `Set end`.
+5. Click `Set end from video time`, or type the timestamp into `Manual timestamp` and click `Set end`.
 6. Write what happened.
 7. Write the evidence you can see.
-8. Click `Finish step + add next` or `Finish + add next` when you are ready for the next step.
+8. Click `Finish + next` when you are ready for the next step.
 
 The action and evidence boxes have `Quick starters` buttons. Click one to insert common words such as `Clicked`, `Typed`, `Selected`, `Submitted`, `Changed`, `Copied`, `Pasted`, or `Switched between`.
 
@@ -239,7 +239,15 @@ Do not create a separate step for every tiny mouse movement.
 
 When the worker changes several fields on one form, split them into separate steps. This helps us compare the human label to the AI label.
 
-### 8. Mark Interruptions
+### 8. Mark Exceptions And Uncertainty
+
+The yellow `Notes` drawer is on the right side of the screen.
+
+Move your mouse over `Notes` to open it. The video pauses while the drawer is open and resumes when you move away.
+
+Use this drawer for interruptions, rework, discrepancies, and uncertainty.
+
+### 9. Mark Interruptions
 
 If the worker does something unrelated, write it in the Interruptions box.
 
@@ -255,7 +263,7 @@ If there are no interruptions, write:
 None observed.
 ```
 
-### 9. Mark Rework Or Corrections
+### 10. Mark Rework Or Corrections
 
 If the worker changes something, then fixes or repeats it, write it in the Rework box.
 
@@ -271,7 +279,7 @@ If there is no rework, write:
 None observed.
 ```
 
-### 10. Mark Discrepancies
+### 11. Mark Discrepancies
 
 A discrepancy is when something visible does not match another visible thing.
 

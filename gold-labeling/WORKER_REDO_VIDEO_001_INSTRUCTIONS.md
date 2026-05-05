@@ -27,14 +27,14 @@ gold-labeling/simple-labeling-tool.html
 The top of the page should say:
 
 ```text
-Version 0.4.0
+Version 0.5.0
 ```
 
 If you already had the helper open:
 
 1. Close the old browser tab.
 2. Open `simple-labeling-tool.html` again.
-3. Check that it says `Version 0.4.0`.
+3. Check that it says `Version 0.5.0`.
 4. If it still shows an older version, press `Ctrl` + `F5`.
 
 ## What To Do Again
@@ -48,11 +48,11 @@ video-001-clean-customer-update
 ```
 
 4. Use the helper tool video player for timestamps, or use Windows Media Player side by side.
-5. If the internal video feels too small, click `Hide internal video for side-by-side` and type the Windows Media Player timestamp into `Manual timestamp from Windows Media Player`.
+5. If the internal video feels too small, click `Side-by-side mode` and type the Windows Media Player timestamp into `Manual timestamp`.
 6. Click inside the step you are editing, then use `Set start from video time` and `Set end from video time`, or use the manual timestamp `Set start` and `Set end` buttons.
 7. Watch the video again.
 8. Recreate the steps.
-9. Use `Finish step + add next` or `Finish + add next` when you want to end the current step and create the next action.
+9. Use `Finish + next` when you want to end the current step and create the next action.
 10. Use `Add next step below` at the bottom of a step when you only want to create a blank next step.
 11. Use the `Quick starters` buttons, such as `Clicked`, `Typed`, `Changed`, `Copied`, `Pasted`, and `Saved`, to start common action sentences.
 12. Click `Check Label Before Export`.
