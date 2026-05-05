@@ -10,7 +10,7 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
-The current helper tool version is shown at the top of the page. Use version `0.3.1` or newer.
+The current helper tool version is shown at the top of the page. Use version `0.4.0` or newer.
 
 ## Your Job
 
@@ -27,6 +27,7 @@ Only write what is visible in the video.
 - the video file your manager gave you
 - this folder
 - Chrome or Edge
+- Windows Media Player, if you prefer to keep the video and helper side by side
 - headphones are optional
 
 ## Step By Step
@@ -69,7 +70,7 @@ If you already had the helper tool open from an earlier attempt:
 
 1. Close that browser tab.
 2. Open `simple-labeling-tool.html` again from the folder.
-3. Check that the top of the page says `Version 0.3.1` or newer.
+3. Check that the top of the page says `Version 0.4.0` or newer.
 4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
@@ -90,25 +91,46 @@ Select the video you are labeling.
 
 This loads the video inside the helper tool.
 
-Use the helper tool video player for timestamps. Do not open the video in another player unless the helper tool cannot load the video.
+You can use the internal helper video player, or you can use Windows Media Player side by side.
+
+If the internal video is too small:
+
+1. Open the video in Windows Media Player.
+2. Put Windows Media Player on one side of the screen.
+3. Put the helper tool on the other side of the screen.
+4. In the helper tool, click `Hide internal video for side-by-side`.
+5. Type the timestamp you see in Windows Media Player into `Manual timestamp from Windows Media Player`. The helper accepts `45`, `0:45`, or `0:45 / 1:45`.
 
 The tool will fill in the video ID from the file name when possible. Check that it is correct.
 
 Type your labeler name or worker ID.
 
-### 4. Use The Video Workstation
+### 4. Use The Active Step Controls
 
-The video stays visible on the left while you fill out steps on the right.
+The `Active Step Controls` box stays visible while you scroll through the form.
+
+Use that box so you do not need to keep scrolling back to the top.
+
+If you use the internal player:
 
 Use these controls:
 
 - `Play/Pause` starts or stops the video.
 - `Back 5s`, `Back 1s`, `Forward 1s`, and `Forward 5s` move around the video.
-- `Set active step start to current time` fills the start time for the highlighted step.
-- `Set active step end to current time` fills the end time for the highlighted step.
+- `Set start from video time` fills the start time for the highlighted step.
+- `Set end from video time` fills the end time for the highlighted step.
+- `Finish step + add next` fills the active step end time, creates the next step, and sets the next step start time.
 - `Set workflow start to current time` and `Set workflow end to current time` fill the whole workflow times.
-- `Bigger Video` gives the video more space.
+- `Make video wider` gives the video more space.
+- `Fullscreen video` opens the video larger.
 - `Speed` slows down or speeds up playback.
+
+If you use Windows Media Player side by side:
+
+- Type the Media Player timestamp into `Manual timestamp from Windows Media Player`.
+- Click `Set start` to fill the active step start time.
+- Click `Set end` to fill the active step end time.
+- Click `Finish + add next` to finish the current step and create the next one.
 
 Click inside a step to make it the active step. The active step is highlighted.
 
@@ -163,11 +185,12 @@ For each step:
 
 1. Pause where the step starts.
 2. Click inside the step so it is highlighted.
-3. Click `Set active step start to current time`, or click `Set start to current video time` under the step start field.
+3. Click `Set start from video time`, or type the timestamp into `Manual timestamp from Windows Media Player` and click `Set start`.
 4. Play until the step ends.
-5. Click `Set active step end to current time`, or click `Set end to current video time` under the step end field.
+5. Click `Set end from video time`, or type the timestamp into `Manual timestamp from Windows Media Player` and click `Set end`.
 6. Write what happened.
 7. Write the evidence you can see.
+8. Click `Finish step + add next` or `Finish + add next` when you are ready for the next step.
 
 The action and evidence boxes have `Quick starters` buttons. Click one to insert common words such as `Clicked`, `Typed`, `Selected`, `Submitted`, `Changed`, `Copied`, `Pasted`, or `Switched between`.
 

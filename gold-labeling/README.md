@@ -33,8 +33,9 @@ For data-entry workers, use the simpler helper tool instead of editing these tem
 - `simple-labeling-tool.html`
 - `SIMPLE_DATA_ENTRY_GUIDE.md`
 - `WINDOWS_VIDEO_PLAYBACK_GUIDE.md`
+- `AI_ASSISTED_LABELING_DESIGN.md`
 
-The helper opens in a browser, lets the worker load a local video, fill out guided fields, checks for missing required fields, and exports the JSON/Markdown files.
+The helper opens in a browser, lets the worker fill out guided fields, checks for missing required fields, and exports the JSON/Markdown files. Workers can use the internal video player or Windows Media Player side by side.
 
 For the video 001 redo, use:
 
@@ -42,7 +43,7 @@ For the video 001 redo, use:
 
 ## Labeling Method
 
-Use `simple-labeling-tool.html` and load the video into its internal player. Watch each video at least twice.
+Use `simple-labeling-tool.html`. Watch each video at least twice. The helper supports either the internal video player or Windows Media Player side by side with manual timestamp entry.
 
 First pass:
 

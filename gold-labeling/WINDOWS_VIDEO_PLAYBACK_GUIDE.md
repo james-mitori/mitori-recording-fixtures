@@ -42,9 +42,25 @@ In this example, the current timestamp is:
 45 seconds
 ```
 
+## Type The Timestamp Into The Helper
+
+The helper tool has a box called:
+
+```text
+Manual timestamp from Windows Media Player
+```
+
+You can type timestamps either way:
+
+- seconds, such as `45` or `72.5`
+- Media Player format, such as `0:45`, `1:12`, or `01:12.50`
+- the full Media Player display, such as `0:45 / 1:45`
+
+Then click `Set start`, `Set end`, or `Finish + add next`.
+
 ## Convert Minutes To Seconds
 
-The labeling tool uses seconds.
+The helper can read Media Player format, but this table is useful if you prefer seconds.
 
 Use this table:
 
@@ -89,10 +105,11 @@ This makes labeling easier.
 
 1. Open the video in Media Player.
 2. Open `simple-labeling-tool.html` in Chrome or Edge.
-3. Click the Media Player window.
-4. Hold the `Windows` key and press `Left Arrow`.
-5. Click the browser window.
-6. Hold the `Windows` key and press `Right Arrow`.
+3. In the helper tool, click `Hide internal video for side-by-side`.
+4. Click the Media Player window.
+5. Hold the `Windows` key and press `Left Arrow`.
+6. Click the browser window.
+7. Hold the `Windows` key and press `Right Arrow`.
 
 Now the video and helper tool should be side by side.
 
