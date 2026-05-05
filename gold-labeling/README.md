@@ -42,7 +42,7 @@ For the video 001 redo, use:
 
 ## Labeling Method
 
-Use a video player that shows timestamps. Watch each video at least twice.
+Use `simple-labeling-tool.html` and load the video into its internal player. Watch each video at least twice.
 
 First pass:
 

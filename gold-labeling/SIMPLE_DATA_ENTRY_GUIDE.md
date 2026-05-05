@@ -10,7 +10,7 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
-The current helper tool version is shown at the top of the page. Use version `0.2.2` or newer.
+The current helper tool version is shown at the top of the page. Use version `0.3.0` or newer.
 
 ## Your Job
 
@@ -27,7 +27,6 @@ Only write what is visible in the video.
 - the video file your manager gave you
 - this folder
 - Chrome or Edge
-- Windows Media Player or Windows Media Player Legacy
 - headphones are optional
 
 ## Step By Step
@@ -56,67 +55,7 @@ Desktop
         └── simple-labeling-tool.html
 ```
 
-### 2. Open The Video In Windows Media Player
-
-Use Windows Media Player to watch the video and read timestamps.
-
-1. Open the `Mitori Gold Labeling` folder.
-2. Find the video file, for example:
-
-```text
-video-001-clean-customer-update.mp4
-```
-
-3. Right-click the video file.
-4. Click `Open with`.
-5. Click `Media Player`.
-6. If you do not see `Media Player`, click `Choose another app`, then select `Media Player`.
-7. If Windows asks "How do you want to open this file?", choose `Media Player`.
-
-When the video opens:
-
-- press the play button to play
-- press the pause button to pause
-- drag the progress bar to move through the video
-- look at the time shown on the player, such as `0:45 / 1:45`
-
-The first number is the current timestamp. In `0:45 / 1:45`, the current timestamp is 45 seconds.
-
-Use these examples:
-
-| Player time | Type this in the labeling tool |
-|---|---:|
-| `0:05` | `5` |
-| `0:45` | `45` |
-| `1:10` | `70` |
-| `2:05` | `125` |
-
-If the player shows hours, minutes, and seconds:
-
-| Player time | Type this in the labeling tool |
-|---|---:|
-| `00:01:30` | `90` |
-| `00:02:15` | `135` |
-
-It is okay if your timestamp is not exact. Try to be within a few seconds.
-
-### 3. If Media Player Does Not Work
-
-Try these options in order:
-
-1. Right-click the video.
-2. Click `Open with`.
-3. Try `Photos`.
-4. If Photos works, use its playback bar and timestamp.
-5. If neither app works, tell your manager:
-
-```text
-I cannot open the video in Windows Media Player or Photos.
-```
-
-Do not install new software unless your manager tells you to.
-
-### 4. Open The Helper Tool
+### 2. Open The Helper Tool
 
 Double-click:
 
@@ -130,7 +69,7 @@ If you already had the helper tool open from an earlier attempt:
 
 1. Close that browser tab.
 2. Open `simple-labeling-tool.html` again from the folder.
-3. Check that the top of the page says `Version 0.2.2` or newer.
+3. Check that the top of the page says `Version 0.3.0` or newer.
 4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
@@ -139,7 +78,7 @@ If Windows asks how to open it:
 2. If you do not see either option, choose `Open with`.
 3. Select `Google Chrome` or `Microsoft Edge`.
 
-### 5. Load The Video In The Helper Tool
+### 3. Load The Video In The Helper Tool
 
 Click:
 
@@ -149,39 +88,43 @@ Choose File
 
 Select the video you are labeling.
 
-This loads the video inside the helper tool. You can use either:
+This loads the video inside the helper tool.
 
-- the helper tool video player, or
-- Windows Media Player
+Use the helper tool video player for timestamps. Do not open the video in another player unless the helper tool cannot load the video.
 
-If the helper video player works well, use it because the `Use Current Time` buttons will fill timestamps for you.
-
-If the helper video player is awkward, use Windows Media Player to read the timestamp and type the time manually.
-
-Type the video ID exactly, for example:
-
-```text
-video-001-clean-customer-update
-```
+The tool will fill in the video ID from the file name when possible. Check that it is correct.
 
 Type your labeler name or worker ID.
 
-### 6. Arrange The Windows
+### 4. Use The Video Workstation
 
-Put the helper tool and the video player side by side if possible.
+The video stays visible on the left while you fill out steps on the right.
 
-Easy option:
+Use these controls:
 
-1. Click the video player window.
-2. Hold the `Windows` key and press the `Left Arrow`.
-3. Click the browser/helper tool window.
-4. Hold the `Windows` key and press the `Right Arrow`.
+- `Play/Pause` starts or stops the video.
+- `Back 5s`, `Back 1s`, `Forward 1s`, and `Forward 5s` move around the video.
+- `Set Step Start` fills the start time for the active step.
+- `Set Step End` fills the end time for the active step.
+- `Set Workflow Start` and `Set Workflow End` fill the whole workflow times.
+- `Bigger Video` gives the video more space.
+- `Speed` slows down or speeds up playback.
 
-Now the video should be on one side and the helper tool on the other side.
+Click inside a step to make it the active step. The active step is highlighted.
 
-If that is confusing, just switch between the windows using the taskbar at the bottom of the screen.
+Keyboard shortcuts work when you are not typing in a field:
 
-### 7. Watch The Video Once
+- `Space`: play or pause
+- `A`: set active step start time
+- `S`: set active step end time
+- `Left Arrow`: back 1 second
+- `Right Arrow`: forward 1 second
+- `Shift` + `Left Arrow`: back 5 seconds
+- `Shift` + `Right Arrow`: forward 5 seconds
+
+The Step Review box shows all steps and helps you jump back to a step.
+
+### 5. Watch The Video Once
 
 Just watch the whole video.
 
@@ -195,7 +138,7 @@ The worker opened a customer update spreadsheet, searched for Acme North in the 
 
 Do not worry about exact steps during the first watch.
 
-### 8. Add Steps
+### 6. Add Steps
 
 Watch the video again.
 
@@ -215,11 +158,12 @@ Examples of meaningful actions:
 For each step:
 
 1. Pause where the step starts.
-2. Click `Use Current Time` in the step start field, or type the Media Player timestamp manually.
-3. Play until the step ends.
-4. Click `Use Current Time` in the step end field, or type the Media Player timestamp manually.
-5. Write what happened.
-6. Write the evidence you can see.
+2. Click inside the step so it is highlighted.
+3. Click `Set Step Start`, or click `Use Current Time` under the step start field.
+4. Play until the step ends.
+5. Click `Set Step End`, or click `Use Current Time` under the step end field.
+6. Write what happened.
+7. Write the evidence you can see.
 
 Use short, clear step labels.
 
@@ -239,7 +183,7 @@ Evidence: It looks done.
 
 The bad example is too vague and judges the work.
 
-### 9. How Detailed Should Steps Be?
+### 7. How Detailed Should Steps Be?
 
 Use one step for each meaningful action.
 
@@ -266,7 +210,7 @@ Do not create a separate step for every tiny mouse movement.
 
 When the worker changes several fields on one form, split them into separate steps. This helps us compare the human label to the AI label.
 
-### 10. Mark Interruptions
+### 8. Mark Interruptions
 
 If the worker does something unrelated, write it in the Interruptions box.
 
@@ -282,7 +226,7 @@ If there are no interruptions, write:
 None observed.
 ```
 
-### 11. Mark Rework Or Corrections
+### 9. Mark Rework Or Corrections
 
 If the worker changes something, then fixes or repeats it, write it in the Rework box.
 
@@ -298,7 +242,7 @@ If there is no rework, write:
 None observed.
 ```
 
-### 12. Mark Discrepancies
+### 10. Mark Discrepancies
 
 A discrepancy is when something visible does not match another visible thing.
 
@@ -314,7 +258,7 @@ If there are no discrepancies, write:
 None observed.
 ```
 
-### 13. Mark Uncertainty
+### 11. Mark Uncertainty
 
 If you are not sure, say so.
 
@@ -326,7 +270,7 @@ The text in the field is hard to read, so I am not sure whether the email addres
 
 Do not guess.
 
-### 14. Save A Draft If You Need A Break
+### 12. Save A Draft If You Need A Break
 
 If you need to stop before finishing:
 
@@ -337,7 +281,7 @@ If you need to stop before finishing:
 
 Important: the draft is only saved on that computer and in that browser.
 
-### 15. Export Files
+### 13. Export Files
 
 Before exporting, click:
 
@@ -424,7 +368,15 @@ Pause as close as you can. A few seconds difference is okay.
 
 ### The helper tool timestamp button does not work
 
-Use Windows Media Player to read the time and type it manually.
+Check that the video is loaded in the helper tool and that you clicked inside the step you are editing.
+
+If the helper video still will not play, tell your manager:
+
+```text
+The helper tool video player is not working for this video.
+```
+
+Only use another video player if your manager tells you to.
 
 ### I do not understand what the worker is doing
 

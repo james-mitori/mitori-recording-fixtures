@@ -42,15 +42,18 @@
       line-height: 1.45;
     }
     main {
-      max-width: 1180px;
+      max-width: 1440px;
       margin: 0 auto;
       padding: 20px;
     }
-    .grid {
+    .workspace {
       display: grid;
-      grid-template-columns: minmax(320px, 1fr) minmax(360px, 1fr);
+      grid-template-columns: minmax(500px, 0.95fr) minmax(520px, 1.05fr);
       gap: 18px;
       align-items: start;
+    }
+    body.theater .workspace {
+      grid-template-columns: minmax(620px, 1.25fr) minmax(420px, 0.75fr);
     }
     .panel {
       border: 1px solid var(--border);
@@ -58,11 +61,47 @@
       padding: 14px;
       background: white;
     }
+    .video-station {
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+    }
+    .label-column {
+      display: grid;
+      gap: 18px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .panel-head h2 {
+      margin-top: 0;
+    }
+    .mode-pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 4px 8px;
+      white-space: nowrap;
+    }
+    .video-shell {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 8px;
+    }
     video {
       width: 100%;
-      max-height: 520px;
+      max-height: 58vh;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
       background: #111;
       border-radius: 6px;
+      display: block;
     }
     label {
       display: block;
@@ -113,6 +152,29 @@
       margin: 10px 0;
       align-items: center;
     }
+    .player-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .player-controls button,
+    .player-controls select {
+      min-height: 38px;
+    }
+    .player-status {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+    .status-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+    }
     .time {
       font-weight: 700;
       color: var(--blue);
@@ -123,6 +185,10 @@
       padding: 12px;
       margin: 12px 0;
       background: #fff;
+    }
+    .step.active {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px rgba(9, 105, 218, 0.16);
     }
     .step.invalid {
       border-color: var(--red);
@@ -169,9 +235,49 @@
       border-color: var(--red);
       color: var(--red);
     }
+    .step-overview {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .step-overview-row {
+      display: grid;
+      grid-template-columns: 54px 86px 1fr;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      padding: 8px;
+      text-align: left;
+      font-weight: 400;
+    }
+    .step-overview-row:last-child {
+      border-bottom: 0;
+    }
+    .step-overview-row.active {
+      background: #ddf4ff;
+      font-weight: 700;
+    }
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     @media (max-width: 900px) {
-      .grid {
+      .workspace {
         grid-template-columns: 1fr;
+      }
+      .video-station {
+        position: static;
+        max-height: none;
+      }
+      .player-controls,
+      .player-status {
+        grid-template-columns: 1fr 1fr;
       }
     }
   </style>
@@ -179,21 +285,57 @@
 <body>
   <header>
     <h1>Mitori Gold Label Helper</h1>
-    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.2.2.</p>
+    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.3.0.</p>
   </header>
 
   <main>
-    <div class="grid">
-      <section class="panel">
-        <h2>1. Load Video</h2>
-        <input id="videoFile" type="file" accept="video/*">
-        <div class="toolbar">
-          <span>Current time: <span id="currentTime" class="time">0.00s</span></span>
-          <button type="button" onclick="rewindFive()">Back 5s</button>
-          <button type="button" onclick="forwardFive()">Forward 5s</button>
+    <div class="workspace">
+      <section class="panel video-station">
+        <div class="panel-head">
+          <h2>1. Video Workstation</h2>
+          <span class="mode-pill">Use this player for timestamps</span>
         </div>
-        <video id="video" controls></video>
+        <input id="videoFile" type="file" accept="video/*">
+        <div class="video-shell">
+          <video id="video" controls playsinline></video>
+        </div>
+        <div class="player-status">
+          <div class="status-chip">Current <span id="currentTime" class="time">0.00s</span></div>
+          <div class="status-chip">Duration <span id="durationTime" class="time">0.00s</span></div>
+          <div class="status-chip">Active <span id="activeStepLabel" class="time">Step 1</span></div>
+        </div>
+        <div class="player-controls">
+          <button type="button" onclick="togglePlay()">Play/Pause</button>
+          <button type="button" onclick="seekBy(-5)">Back 5s</button>
+          <button type="button" onclick="seekBy(-1)">Back 1s</button>
+          <button type="button" onclick="seekBy(1)">Forward 1s</button>
+          <button type="button" onclick="seekBy(5)">Forward 5s</button>
+          <button type="button" onclick="captureActiveStepStart()">Set Step Start</button>
+          <button type="button" onclick="captureActiveStepEnd()">Set Step End</button>
+          <button type="button" onclick="toggleTheaterMode()">Bigger Video</button>
+        </div>
+        <div class="toolbar">
+          <button type="button" onclick="setTime('workflowStart')">Set Workflow Start</button>
+          <button type="button" onclick="setTime('workflowEnd')">Set Workflow End</button>
+          <label class="small" for="playbackRate">Speed</label>
+          <select id="playbackRate" onchange="setPlaybackRate(this.value)">
+            <option value="0.5">0.5x</option>
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+        </div>
+        <div class="help">
+          Use the internal player so the timestamp buttons fill the active step automatically.
+          Click inside a step to make it active. Shortcuts outside text fields: Space play/pause, A set start, S set end, arrows seek.
+        </div>
+        <h2>Step Review</h2>
+        <div id="stepOverview" class="step-overview"></div>
+      </section>
 
+      <div class="label-column">
+      <section class="panel">
         <h2>2. Basic Details</h2>
         <label for="sampleId">Video ID</label>
         <input id="sampleId" placeholder="video-001-clean-customer-update">
@@ -239,7 +381,6 @@
         <button class="primary" type="button" onclick="addStep()">Add Step</button>
         <div id="steps"></div>
       </section>
-    </div>
 
     <section class="panel">
       <h2>4. Messy Work Notes</h2>
@@ -277,12 +418,18 @@
       <div id="validationStatus" class="status" hidden></div>
       <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page. The export will stop if required fields are missing.</p>
     </section>
+      </div>
+    </div>
   </main>
 
   <script>
     const video = document.getElementById('video');
     const currentTime = document.getElementById('currentTime');
+    const durationTime = document.getElementById('durationTime');
+    const activeStepLabel = document.getElementById('activeStepLabel');
+    const stepOverview = document.getElementById('stepOverview');
     const steps = document.getElementById('steps');
+    let activeStep = null;
 
     document.getElementById('videoFile').addEventListener('change', (event) => {
       const file = event.target.files[0];
@@ -294,20 +441,66 @@
       }
     });
 
+    video.addEventListener('loadedmetadata', () => {
+      durationTime.textContent = formatTime(video.duration);
+      const workflowEnd = document.getElementById('workflowEnd');
+      if (!workflowEnd.value || Number(workflowEnd.value) === 0) {
+        workflowEnd.value = video.duration.toFixed(2);
+      }
+    });
+
     video.addEventListener('timeupdate', () => {
-      currentTime.textContent = `${video.currentTime.toFixed(2)}s`;
+      currentTime.textContent = formatTime(video.currentTime);
     });
 
     function setTime(id) {
       document.getElementById(id).value = video.currentTime.toFixed(2);
     }
 
-    function rewindFive() {
-      video.currentTime = Math.max(0, video.currentTime - 5);
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return '0.00s';
+      return `${seconds.toFixed(2)}s`;
     }
 
-    function forwardFive() {
-      video.currentTime = Math.min(video.duration || video.currentTime + 5, video.currentTime + 5);
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    function seekBy(seconds) {
+      const next = video.currentTime + seconds;
+      video.currentTime = Math.max(0, Math.min(video.duration || next, next));
+    }
+
+    function setPlaybackRate(value) {
+      video.playbackRate = Number(value) || 1;
+    }
+
+    function toggleTheaterMode() {
+      document.body.classList.toggle('theater');
+    }
+
+    function captureActiveStepStart() {
+      const step = ensureActiveStep();
+      step.querySelector('.step-start').value = video.currentTime.toFixed(2);
+      renderStepOverview();
+    }
+
+    function captureActiveStepEnd() {
+      const step = ensureActiveStep();
+      step.querySelector('.step-end').value = video.currentTime.toFixed(2);
+      renderStepOverview();
+    }
+
+    function ensureActiveStep() {
+      if (!activeStep || !steps.contains(activeStep)) {
+        if (!steps.children.length) addStep();
+        setActiveStep(steps.children[0]);
+      }
+      return activeStep;
     }
 
     function addStep(data = {}) {
@@ -317,18 +510,18 @@
       div.innerHTML = `
         <div class="step-title">
           <strong>Step ${index}</strong>
-          <button type="button" onclick="this.closest('.step').remove(); renumberSteps();">Remove</button>
+          <button type="button" onclick="event.stopPropagation(); removeStep(this)">Remove</button>
         </div>
         <div class="row">
           <div>
             <label>Start time</label>
             <input class="step-start" type="number" step="0.01" value="${data.start_time_sec ?? ''}">
-            <button class="inline-button" type="button" onclick="this.previousElementSibling.value = video.currentTime.toFixed(2)">Use Current Time</button>
+            <button class="inline-button" type="button" onclick="setStepTimeFromButton(this, '.step-start')">Use Current Time</button>
           </div>
           <div>
             <label>End time</label>
             <input class="step-end" type="number" step="0.01" value="${data.end_time_sec ?? ''}">
-            <button class="inline-button" type="button" onclick="this.previousElementSibling.value = video.currentTime.toFixed(2)">Use Current Time</button>
+            <button class="inline-button" type="button" onclick="setStepTimeFromButton(this, '.step-end')">Use Current Time</button>
           </div>
         </div>
         <label>Observed action</label>
@@ -351,6 +544,47 @@
         </div>
       `;
       steps.appendChild(div);
+      div.addEventListener('click', () => setActiveStep(div));
+      div.addEventListener('focusin', () => setActiveStep(div));
+      if (!activeStep || !steps.contains(activeStep)) {
+        setActiveStep(div);
+      }
+      renderStepOverview();
+    }
+
+    function removeStep(button) {
+      const step = button.closest('.step');
+      const wasActive = step === activeStep;
+      step.remove();
+      if (wasActive) {
+        activeStep = null;
+        if (steps.children[0]) setActiveStep(steps.children[0]);
+      }
+      renumberSteps();
+    }
+
+    function setStepTimeFromButton(button, selector) {
+      const step = button.closest('.step');
+      setActiveStep(step);
+      step.querySelector(selector).value = video.currentTime.toFixed(2);
+      renderStepOverview();
+    }
+
+    function setActiveStep(step) {
+      if (!step) return;
+      [...steps.children].forEach((item) => item.classList.remove('active'));
+      activeStep = step;
+      activeStep.classList.add('active');
+      const index = [...steps.children].indexOf(activeStep) + 1;
+      activeStepLabel.textContent = `Step ${index || 1}`;
+      renderStepOverview();
+    }
+
+    function activateStepByIndex(index) {
+      const step = steps.children[index];
+      if (!step) return;
+      setActiveStep(step);
+      step.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function confidenceOptions(selected) {
@@ -365,6 +599,34 @@
       [...steps.children].forEach((step, index) => {
         step.querySelector('.step-title strong').textContent = `Step ${index + 1}`;
       });
+      if (activeStep && steps.contains(activeStep)) {
+        const index = [...steps.children].indexOf(activeStep) + 1;
+        activeStepLabel.textContent = `Step ${index || 1}`;
+      } else {
+        activeStepLabel.textContent = steps.children.length ? 'Step 1' : 'No step';
+      }
+      renderStepOverview();
+    }
+
+    function renderStepOverview() {
+      if (!stepOverview) return;
+      if (!steps.children.length) {
+        stepOverview.innerHTML = '<div class="step-overview-row"><span>No steps</span><span></span><span></span></div>';
+        return;
+      }
+      stepOverview.innerHTML = [...steps.children].map((step, index) => {
+        const start = step.querySelector('.step-start').value || '?';
+        const end = step.querySelector('.step-end').value || '?';
+        const label = step.querySelector('.step-action').value.trim() || 'Missing action';
+        const active = step === activeStep ? ' active' : '';
+        return `
+          <button class="step-overview-row${active}" type="button" onclick="activateStepByIndex(${index})">
+            <span>Step ${index + 1}</span>
+            <span>${escapeHtml(start)}-${escapeHtml(end)}</span>
+            <span class="truncate">${escapeHtml(label)}</span>
+          </button>
+        `;
+      }).join('');
     }
 
     function collectData(options = {}) {
@@ -405,7 +667,7 @@
         sample_id: sampleId,
         gold_label_version: '0.1.0',
         label_type: 'human_video_observed_gold',
-        tool_version: 'simple-labeling-tool-0.2.2',
+        tool_version: 'simple-labeling-tool-0.3.0',
         labeler_id: value('labelerId'),
         adjudicated: false,
         source_files_used: ['video_only'],
@@ -666,8 +928,36 @@ ${wf.uncertainty.length ? wf.uncertainty.map((item) => `- ${item}`).join('\n') :
       URL.revokeObjectURL(link.href);
     }
 
-    document.addEventListener('input', resetValidationStatus);
-    document.addEventListener('change', resetValidationStatus);
+    function handleFormEdit() {
+      resetValidationStatus();
+      renderStepOverview();
+    }
+
+    function isTypingTarget(target) {
+      return target && ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+    }
+
+    document.addEventListener('input', handleFormEdit);
+    document.addEventListener('change', handleFormEdit);
+    document.addEventListener('keydown', (event) => {
+      if (isTypingTarget(event.target)) return;
+      if (event.code === 'Space') {
+        event.preventDefault();
+        togglePlay();
+      } else if (event.key === 'a' || event.key === 'A') {
+        event.preventDefault();
+        captureActiveStepStart();
+      } else if (event.key === 's' || event.key === 'S') {
+        event.preventDefault();
+        captureActiveStepEnd();
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        seekBy(event.shiftKey ? -5 : -1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        seekBy(event.shiftKey ? 5 : 1);
+      }
+    });
 
     addStep();
   </script>
