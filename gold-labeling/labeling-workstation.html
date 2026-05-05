@@ -988,7 +988,7 @@
     <span class="save-indicator" id="saveIndicator" title="Saved automatically every 600ms after edits and on tab close">
       <span class="save-dot"></span><span class="save-text">Idle</span>
     </span>
-    <button class="ghost-light btn-tour" type="button" onclick="startTour({ manual: true })" title="Take an interactive tour of the tool">
+    <button class="ghost-light btn-tour" type="button" onclick="onTourButtonClicked()" title="Take an interactive tour of the tool">
       Tour
     </button>
     <button class="ghost-light" type="button" onclick="openLabelingGuide()" title="Labeling guide">
@@ -1199,7 +1199,7 @@
         <div class="shortcut-row"><span class="desc">End step + start next</span><span class="keys"><span class="key">S</span></span></div>
         <div class="shortcut-row"><span class="desc">Adjust active start / end</span><span class="keys"><span class="key">⇧A</span><span class="key">⇧S</span></span></div>
         <div class="shortcut-row"><span class="desc">Previous / next step</span><span class="keys"><span class="key">[</span><span class="key">]</span></span></div>
-        <div class="shortcut-row"><span class="desc">Insert chip 1–9 (in field)</span><span class="keys"><span class="key">1…9</span></span></div>
+        <div class="shortcut-row"><span class="desc">Insert chip (when field is empty)</span><span class="keys"><span class="key">1…9</span></span></div>
         <div class="shortcut-row"><span class="desc">Set confidence 1–5</span><span class="keys"><span class="key">⌘1…5</span></span></div>
       </div>
       <div class="shortcuts-section">
@@ -1318,7 +1318,7 @@
           </div>
           <div class="guide-field">
             <b>Action</b>
-            <span>What the worker visibly did. Use the chip starters or type:
+            <span>What the worker visibly did. Click a starter chip, or press <span class="key" style="font-family: var(--mono); padding: 1px 6px; background: var(--white); border: 1px solid var(--border); border-radius: 4px; font-size: 11px;">1</span>–<span class="key" style="font-family: var(--mono); padding: 1px 6px; background: var(--white); border: 1px solid var(--border); border-radius: 4px; font-size: 11px;">9</span> while the field is empty:
               <span class="demo" style="margin-top:4px;">
                 <span class="chip"><span class="chip-kbd">1</span>Clicked</span>
                 <span class="chip"><span class="chip-kbd">2</span>Typed</span>
@@ -1413,6 +1413,29 @@
           <li><b>Observed discrepancies</b> — visible mismatches between sources. Spreadsheet shows £400, CRM shows £450. About the data, not the worker.</li>
           <li><b>Whole-video uncertainty</b> — things you couldn't observe. "Couldn't read the toast in the bottom-right; cursor blocked it." About what you, the labeler, couldn't see.</li>
         </ul>
+      </div>
+
+      <!-- Granularity Q&A ── -->
+      <div class="guide-card span-2">
+        <h3 class="guide-h">Granularity — when to split a step</h3>
+        <div class="guide-fieldlist" style="grid-template-columns: 1fr 1fr; gap: 14px 28px;">
+          <div class="guide-field" style="grid-template-columns: 130px 1fr;">
+            <b>Copy and paste</b>
+            <span><b>Two steps</b> when both are visible. Copy is one observable action (highlight + Cmd+C in source); paste is another (Cmd+V in destination, value appears). Different timestamps, different evidence. If only one is visible — e.g. you see the paste happen but never see the copy — label only that one.</span>
+          </div>
+          <div class="guide-field" style="grid-template-columns: 130px 1fr;">
+            <b>Multiple field updates</b>
+            <span><b>One step per field.</b> Updating Account Owner, Renewal Date, and Billing Email is three steps, not one "updated record" step. The benchmark grades the AI on each field separately.</span>
+          </div>
+          <div class="guide-field" style="grid-template-columns: 130px 1fr;">
+            <b>Searching for a record</b>
+            <span><b>One step.</b> Typing into the search box and clicking the result are usually one logical action — searching for "Acme North." Split only if there's a meaningful pause or a different visible state in between.</span>
+          </div>
+          <div class="guide-field" style="grid-template-columns: 130px 1fr;">
+            <b>Click then wait</b>
+            <span><b>One step.</b> A click that triggers loading is a single action. The wait is part of it. Use action types <i>click</i> + <i>wait</i> to capture both.</span>
+          </div>
+        </div>
       </div>
 
       <!-- Common mistakes ── -->
@@ -1896,6 +1919,7 @@ function captureActiveStepStart(opts = {}) {
   if (state.workflowStartSec === 0 && state.steps.length === 1) {
     state.workflowStartSec = step.startSec;
   }
+  clampWorkflowToSteps();
   scheduleSave();
   renderAll();
 }
@@ -1910,6 +1934,7 @@ function captureActiveStepEnd(opts = {}) {
   const step = activeStep();
   if (!step) return;
   step.endSec = round2(t);
+  clampWorkflowToSteps();
   scheduleSave();
   renderAll();
 }
@@ -1935,6 +1960,30 @@ function finishActiveAndAddNext(opts = {}) {
 function round2(n) {
   if (!Number.isFinite(n)) return n;
   return Math.round(n * 100) / 100;
+}
+
+function clampWorkflowToSteps() {
+  // Auto-extend the workflow start/end so it always contains all steps.
+  // Never shrinks below the loaded video duration's range.
+  const steps = state.steps;
+  let minStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : 0;
+  let maxEnd = Number.isFinite(state.workflowEndSec) ? state.workflowEndSec : 0;
+  let mutated = false;
+  for (const s of steps) {
+    if (Number.isFinite(s.startSec) && s.startSec < minStart) {
+      minStart = s.startSec;
+      mutated = true;
+    }
+    if (Number.isFinite(s.endSec) && s.endSec > maxEnd) {
+      maxEnd = s.endSec;
+      mutated = true;
+    }
+  }
+  if (state.videoDuration && maxEnd > state.videoDuration) maxEnd = state.videoDuration;
+  if (mutated) {
+    state.workflowStartSec = minStart;
+    state.workflowEndSec = maxEnd;
+  }
 }
 
 function setActiveStepStartFromManual() {
@@ -2305,6 +2354,7 @@ function onTimeFieldBlur(event, key) {
   }
   step[key] = round2(t);
   event.target.value = formatTime(step[key]);
+  clampWorkflowToSteps();
   renderTimeline(); renderStepList(); renderStepCounter();
   scheduleSave();
 }
@@ -2541,6 +2591,7 @@ document.addEventListener('mousemove', (event) => {
 document.addEventListener('mouseup', () => {
   if (dragCtx && dragCtx.type === 'edge') {
     if (dragCtx.wasPlaying && els.video.src) els.video.play().catch(() => {});
+    clampWorkflowToSteps();
     scheduleSave();
   }
   dragCtx = null;
@@ -3302,7 +3353,13 @@ document.addEventListener('visibilitychange', () => {
 els.video.addEventListener('loadedmetadata', () => {
   state.videoDuration = els.video.duration || 0;
   els.durTimeDisp.textContent = formatTime(state.videoDuration);
-  if (state.workflowEndSec === 0) state.workflowEndSec = state.videoDuration;
+  // If the workflow end is unset, or stale (e.g. from a previous shorter video / tour
+  // leftover), expand it to cover the whole new video. Never shrink past existing steps.
+  const haveSteps = state.steps.some(s => Number.isFinite(s.endSec));
+  if (state.workflowEndSec === 0 || (!haveSteps && state.workflowEndSec < state.videoDuration)) {
+    state.workflowEndSec = state.videoDuration;
+  }
+  clampWorkflowToSteps();
   renderTimeline();
 });
 els.video.addEventListener('timeupdate', () => {
@@ -3404,19 +3461,24 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (isTypingTarget(event.target)) {
-    // Inside an input: 1..9 chips work in the action/evidence fields
+    // Inside an input: 1..9 inserts a chip ONLY if the field is empty and the
+    // cursor is at the start. Once typing has begun, 1..9 produce digits as expected.
     if (/^[1-9]$/.test(event.key)) {
-      const target = event.target.id;
-      const idx = Number(event.key) - 1;
-      if (target === 'stepFieldAction' && ACTION_STARTERS[idx]) {
-        event.preventDefault();
-        insertChip('action', ACTION_STARTERS[idx]);
-        return;
-      }
-      if (target === 'stepFieldEvidence' && EVIDENCE_STARTERS[idx]) {
-        event.preventDefault();
-        insertChip('evidence', EVIDENCE_STARTERS[idx]);
-        return;
+      const t = event.target;
+      const fieldEmpty = !(t.value && t.value.length);
+      const atStart = (t.selectionStart ?? 0) === 0 && (t.selectionEnd ?? 0) === 0;
+      if (fieldEmpty && atStart) {
+        const idx = Number(event.key) - 1;
+        if (t.id === 'stepFieldAction' && ACTION_STARTERS[idx]) {
+          event.preventDefault();
+          insertChip('action', ACTION_STARTERS[idx]);
+          return;
+        }
+        if (t.id === 'stepFieldEvidence' && EVIDENCE_STARTERS[idx]) {
+          event.preventDefault();
+          insertChip('evidence', EVIDENCE_STARTERS[idx]);
+          return;
+        }
       }
     }
     return;
@@ -3607,9 +3669,9 @@ function buildTourSteps() {
       target: '#stepCard',
       eyebrow: 'Step 4 — Describe',
       title: 'Tell us what you saw',
-      text: 'Type the action, or press <span class="key">1</span>–<span class="key">9</span> to drop in a starter chip. Each chip inserts a verb with spaces around it and the cursor parked ready for you to keep typing.',
+      text: 'Type the action freely, or click a starter chip. From an <i>empty</i> field you can also press <span class="key">1</span>–<span class="key">9</span> to drop in the matching chip. Once you start typing, those keys produce digits as expected.',
       placement: 'left',
-      hint: { label: 'Try it', text: 'Press 1 (or click the "Clicked" chip) to insert a starter.' },
+      hint: { label: 'Try it', text: 'Click the "Clicked" chip to insert a starter, then keep typing.' },
       hideNext: true,
       waitFor: 'chipUsed',
     },
@@ -3782,9 +3844,7 @@ function startTour(opts = {}) {
 
 function exitTour(opts = {}) {
   if (!TOUR.active) {
-    if (opts.fromSplash) {
-      hideTourSplash();
-    }
+    hideTourSplash();
     return;
   }
   if (opts.confirm) {
@@ -3799,8 +3859,19 @@ function exitTour(opts = {}) {
   closeAllPanels();
   restoreRealState();
   TOUR.active = false;
-  if (opts.completed || opts.fromSplash) {
-    try { localStorage.setItem(TOUR_DONE_KEY, '1'); } catch (e) {}
+  try { localStorage.setItem(TOUR_DONE_KEY, '1'); } catch (e) {}
+  // Always leave the user in a useful state — open setup so they can load a real video.
+  if (!opts.suppressSetup) {
+    setTimeout(() => openSetupModal(), 220);
+  }
+}
+
+function onTourButtonClicked() {
+  // If a tour is already active, treat the button as an exit.
+  if (TOUR.active) {
+    exitTour({ confirm: false });
+  } else {
+    startTour({ manual: true });
   }
 }
 
@@ -4048,7 +4119,7 @@ function showTourSplash(kind) {
       <div class="tour-splash-actions">
         <span class="tour-splash-meta">Roughly 3 minutes. You can re-launch any time from the <b>Tour</b> button.</span>
         <span class="spacer"></span>
-        <button type="button" onclick="exitTour({ fromSplash: true })">Skip for now</button>
+        <button type="button" onclick="exitTour()">Skip for now</button>
         <button type="button" class="primary" onclick="onWelcomeStart()">Take the tour</button>
       </div>`;
   } else if (kind === 'complete') {
@@ -4079,13 +4150,12 @@ function onWelcomeStart() {
   tourGoTo(0);
 }
 function onCompleteFinish() {
+  // exitTour already opens the setup modal
   exitTour({ completed: true });
-  // After tour, show setup so user can pick their real video
-  setTimeout(() => openSetupModal(), 200);
 }
 function onCompleteOpenGuide() {
-  exitTour({ completed: true });
-  setTimeout(() => openLabelingGuide(), 200);
+  exitTour({ completed: true, suppressSetup: true });
+  setTimeout(() => { openLabelingGuide(); openSetupModal(); }, 200);
 }
 
 /* Re-position on resize/scroll */
