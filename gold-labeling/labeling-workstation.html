@@ -1199,7 +1199,7 @@
         <div class="shortcut-row"><span class="desc">End step + start next</span><span class="keys"><span class="key">S</span></span></div>
         <div class="shortcut-row"><span class="desc">Adjust active start / end</span><span class="keys"><span class="key">⇧A</span><span class="key">⇧S</span></span></div>
         <div class="shortcut-row"><span class="desc">Previous / next step</span><span class="keys"><span class="key">[</span><span class="key">]</span></span></div>
-        <div class="shortcut-row"><span class="desc">Insert chip (when field is empty)</span><span class="keys"><span class="key">1…9</span></span></div>
+        <div class="shortcut-row"><span class="desc">Insert a starter chip</span><span class="keys" style="color:var(--muted);font-size:11px;">click the chip</span></div>
         <div class="shortcut-row"><span class="desc">Set confidence 1–5</span><span class="keys"><span class="key">⌘1…5</span></span></div>
       </div>
       <div class="shortcuts-section">
@@ -1318,11 +1318,11 @@
           </div>
           <div class="guide-field">
             <b>Action</b>
-            <span>What the worker visibly did. Click a starter chip, or press <span class="key" style="font-family: var(--mono); padding: 1px 6px; background: var(--white); border: 1px solid var(--border); border-radius: 4px; font-size: 11px;">1</span>–<span class="key" style="font-family: var(--mono); padding: 1px 6px; background: var(--white); border: 1px solid var(--border); border-radius: 4px; font-size: 11px;">9</span> while the field is empty:
+            <span>What the worker visibly did. Click a starter chip to drop a verb in:
               <span class="demo" style="margin-top:4px;">
-                <span class="chip"><span class="chip-kbd">1</span>Clicked</span>
-                <span class="chip"><span class="chip-kbd">2</span>Typed</span>
-                <span class="chip"><span class="chip-kbd">3</span>Selected</span>
+                <span class="chip">Clicked</span>
+                <span class="chip">Typed</span>
+                <span class="chip">Selected</span>
               </span>
               <br>Don't write "tried to" or "wanted to".
             </span>
@@ -2157,9 +2157,7 @@ function renderStepCard() {
       ${ lintNotes ? `<div class="field-warn">${lintNotes}</div>` : '' }
       <div class="chip-row">
         ${ ACTION_STARTERS.map((s, i) => `
-          <button class="chip" type="button" onclick="insertActionChip(${i})">
-            <span class="chip-kbd">${i + 1}</span>${escapeHtml(s.trim())}
-          </button>
+          <button class="chip" type="button" onclick="insertActionChip(${i})">${escapeHtml(s.trim())}</button>
         `).join('') }
       </div>
     </div>
@@ -2197,9 +2195,7 @@ function renderStepCard() {
       ${ evidenceLint ? `<div class="field-warn">${evidenceLint}</div>` : '' }
       <div class="chip-row">
         ${ EVIDENCE_STARTERS.map((s, i) => `
-          <button class="chip" type="button" onclick="insertEvidenceChip(${i})">
-            <span class="chip-kbd">${i + 1}</span>${escapeHtml(s.trim())}
-          </button>
+          <button class="chip" type="button" onclick="insertEvidenceChip(${i})">${escapeHtml(s.trim())}</button>
         `).join('') }
       </div>
     </div>
@@ -3461,26 +3457,8 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (isTypingTarget(event.target)) {
-    // Inside an input: 1..9 inserts a chip ONLY if the field is empty and the
-    // cursor is at the start. Once typing has begun, 1..9 produce digits as expected.
-    if (/^[1-9]$/.test(event.key)) {
-      const t = event.target;
-      const fieldEmpty = !(t.value && t.value.length);
-      const atStart = (t.selectionStart ?? 0) === 0 && (t.selectionEnd ?? 0) === 0;
-      if (fieldEmpty && atStart) {
-        const idx = Number(event.key) - 1;
-        if (t.id === 'stepFieldAction' && ACTION_STARTERS[idx]) {
-          event.preventDefault();
-          insertChip('action', ACTION_STARTERS[idx]);
-          return;
-        }
-        if (t.id === 'stepFieldEvidence' && EVIDENCE_STARTERS[idx]) {
-          event.preventDefault();
-          insertChip('evidence', EVIDENCE_STARTERS[idx]);
-          return;
-        }
-      }
-    }
+    // Inside an input/textarea: do not intercept any letter or number keys.
+    // Chips are click-only by design.
     return;
   }
 
@@ -3669,7 +3647,7 @@ function buildTourSteps() {
       target: '#stepCard',
       eyebrow: 'Step 4 — Describe',
       title: 'Tell us what you saw',
-      text: 'Type the action freely, or click a starter chip. From an <i>empty</i> field you can also press <span class="key">1</span>–<span class="key">9</span> to drop in the matching chip. Once you start typing, those keys produce digits as expected.',
+      text: 'Type the action, or click a starter chip to drop in a verb. Each chip inserts the word with spaces around it and parks the cursor right after it, so you can keep typing immediately.',
       placement: 'left',
       hint: { label: 'Try it', text: 'Click the "Clicked" chip to insert a starter, then keep typing.' },
       hideNext: true,
