@@ -34,7 +34,11 @@ For data-entry workers, use the simpler helper tool instead of editing these tem
 - `SIMPLE_DATA_ENTRY_GUIDE.md`
 - `WINDOWS_VIDEO_PLAYBACK_GUIDE.md`
 
-The helper opens in a browser, lets the worker load a local video, fill out guided fields, and export the JSON/Markdown files.
+The helper opens in a browser, lets the worker load a local video, fill out guided fields, checks for missing required fields, and exports the JSON/Markdown files.
+
+For the video 001 redo, use:
+
+- `WORKER_REDO_VIDEO_001_INSTRUCTIONS.md`
 
 ## Labeling Method
 

@@ -14,6 +14,9 @@
       --muted: #59636e;
       --blue: #0969da;
       --green: #1a7f37;
+      --red: #cf222e;
+      --red-bg: #fff1f1;
+      --green-bg: #dafbe1;
     }
     body {
       margin: 0;
@@ -121,6 +124,10 @@
       margin: 12px 0;
       background: #fff;
     }
+    .step.invalid {
+      border-color: var(--red);
+      background: var(--red-bg);
+    }
     .step-title {
       display: flex;
       align-items: center;
@@ -145,6 +152,23 @@
       font-size: 12px;
       padding: 5px 7px;
     }
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      white-space: pre-wrap;
+    }
+    .status.ok {
+      background: var(--green-bg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .status.error {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+    }
     @media (max-width: 900px) {
       .grid {
         grid-template-columns: 1fr;
@@ -155,7 +179,7 @@
 <body>
   <header>
     <h1>Mitori Gold Label Helper</h1>
-    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels.</p>
+    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.2.0.</p>
   </header>
 
   <main>
@@ -210,7 +234,7 @@
         <h2>3. Steps</h2>
         <div class="help">
           <strong>Simple rule:</strong> every step needs a start time, end time, observed action, and evidence.
-          Use plain language. Do not guess.
+          Use plain language. Do not guess. If the worker changes several fields, create one step per field or value changed.
         </div>
         <button class="primary" type="button" onclick="addStep()">Add Step</button>
         <div id="steps"></div>
@@ -244,12 +268,14 @@
     <section class="panel">
       <h2>5. Export</h2>
       <div class="toolbar">
+        <button type="button" onclick="validateCurrentLabel()">Check Label Before Export</button>
         <button class="success" type="button" onclick="downloadJson()">Export JSON</button>
         <button class="success" type="button" onclick="downloadMarkdown()">Export Markdown</button>
         <button type="button" onclick="saveDraft()">Save Draft In Browser</button>
         <button type="button" onclick="loadDraft()">Load Draft</button>
       </div>
-      <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page.</p>
+      <div id="validationStatus" class="status" hidden></div>
+      <p>Send both exported files to your manager. The video stays on your computer and is not uploaded by this page. The export will stop if required fields are missing.</p>
     </section>
   </main>
 
@@ -341,30 +367,45 @@
       });
     }
 
-    function collectData() {
+    function collectData(options = {}) {
+      const exportMode = Boolean(options.exportMode);
       const sampleId = value('sampleId') || 'unnamed-video';
       const stepData = [...steps.children].map((step, index) => {
         const start = numberValue(step.querySelector('.step-start'));
         const end = numberValue(step.querySelector('.step-end'));
         const evidenceText = fieldValue(step, '.step-evidence');
+        const observedLabel = fieldValue(step, '.step-action');
+        const screenContext = fieldValue(step, '.step-context');
+        const uncertainty = fieldValue(step, '.step-uncertainty');
+        const isBlank = !step.querySelector('.step-start').value.trim()
+          && !step.querySelector('.step-end').value.trim()
+          && !observedLabel
+          && !screenContext
+          && !evidenceText
+          && !uncertainty;
+        if (exportMode && isBlank) return null;
         return {
           step_id: `gold_step_${String(index + 1).padStart(3, '0')}`,
           start_time_sec: start,
           end_time_sec: end,
-          observed_label: fieldValue(step, '.step-action'),
-          screen_context: fieldValue(step, '.step-context'),
+          observed_label: observedLabel,
+          screen_context: screenContext,
           evidence: [{
             timestamp_sec: start,
             visible_evidence: evidenceText
           }],
           confidence: Number(fieldValue(step, '.step-confidence') || 0.9),
-          uncertainty: fieldValue(step, '.step-uncertainty') || null
+          uncertainty: uncertainty || null
         };
-      });
+      }).filter(Boolean).map((step, index) => ({
+        ...step,
+        step_id: `gold_step_${String(index + 1).padStart(3, '0')}`
+      }));
       return {
         sample_id: sampleId,
         gold_label_version: '0.1.0',
         label_type: 'human_video_observed_gold',
+        tool_version: 'simple-labeling-tool-0.2.0',
         labeler_id: value('labelerId'),
         adjudicated: false,
         source_files_used: ['video_only'],
@@ -385,6 +426,69 @@
         }],
         review_notes: []
       };
+    }
+
+    function validateData(data) {
+      clearInvalidStepMarkers();
+      const errors = [];
+      const wf = data.workflow_instances[0];
+      if (!data.sample_id || data.sample_id === 'unnamed-video') errors.push('Enter the Video ID.');
+      if (!data.labeler_id) errors.push('Enter your worker ID/name.');
+      if (!wf.observed_label) errors.push('Enter the workflow name.');
+      if (!wf.summary) errors.push('Enter the short summary.');
+      if (wf.end_time_sec <= wf.start_time_sec) errors.push('Workflow end time must be after workflow start time.');
+      if (!wf.steps.length) errors.push('Add at least one completed step.');
+
+      wf.steps.forEach((step, index) => {
+        const prefix = `Step ${index + 1}`;
+        if (step.end_time_sec <= step.start_time_sec) errors.push(`${prefix}: end time must be after start time.`);
+        if (!step.observed_label) errors.push(`${prefix}: observed action is missing.`);
+        if (!step.screen_context) errors.push(`${prefix}: screen/app context is missing.`);
+        const evidence = step.evidence && step.evidence[0] ? step.evidence[0].visible_evidence : '';
+        if (!evidence) errors.push(`${prefix}: visible evidence is missing.`);
+        if (step.start_time_sec < wf.start_time_sec || step.end_time_sec > wf.end_time_sec) {
+          errors.push(`${prefix}: step time is outside the workflow start/end range.`);
+        }
+      });
+
+      markInvalidSteps(wf.steps);
+      return errors;
+    }
+
+    function clearInvalidStepMarkers() {
+      [...steps.children].forEach((step) => step.classList.remove('invalid'));
+    }
+
+    function markInvalidSteps(stepData) {
+      [...steps.children].forEach((step, index) => {
+        const data = stepData[index];
+        if (!data) return;
+        const evidence = data.evidence && data.evidence[0] ? data.evidence[0].visible_evidence : '';
+        if (
+          data.end_time_sec <= data.start_time_sec ||
+          !data.observed_label ||
+          !data.screen_context ||
+          !evidence
+        ) {
+          step.classList.add('invalid');
+        }
+      });
+    }
+
+    function showValidation(errors) {
+      const status = document.getElementById('validationStatus');
+      status.hidden = false;
+      status.className = errors.length ? 'status error' : 'status ok';
+      status.textContent = errors.length
+        ? `Please fix these items before export:\n- ${errors.join('\n- ')}`
+        : 'Label check passed. You can export JSON and Markdown.';
+    }
+
+    function validateCurrentLabel() {
+      const data = collectData({ exportMode: true });
+      const errors = validateData(data);
+      showValidation(errors);
+      return errors.length === 0;
     }
 
     function toMarkdown(data) {
@@ -439,12 +543,18 @@ ${wf.uncertainty.length ? wf.uncertainty.map((item) => `- ${item}`).join('\n') :
     }
 
     function downloadJson() {
-      const data = collectData();
+      const data = collectData({ exportMode: true });
+      const errors = validateData(data);
+      showValidation(errors);
+      if (errors.length) return;
       download(`${data.sample_id}.gold.json`, JSON.stringify(data, null, 2) + '\n', 'application/json');
     }
 
     function downloadMarkdown() {
-      const data = collectData();
+      const data = collectData({ exportMode: true });
+      const errors = validateData(data);
+      showValidation(errors);
+      if (errors.length) return;
       download(`${data.sample_id}.gold.md`, toMarkdown(data), 'text/markdown');
     }
 

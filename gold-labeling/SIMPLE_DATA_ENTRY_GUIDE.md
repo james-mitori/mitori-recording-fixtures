@@ -10,6 +10,8 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
+The current helper tool version is shown at the top of the page. Use version `0.2.0` or newer.
+
 ## Your Job
 
 Watch the video and write down what you see.
@@ -123,6 +125,13 @@ simple-labeling-tool.html
 ```
 
 It should open in Chrome or Edge.
+
+If you already had the helper tool open from an earlier attempt:
+
+1. Close that browser tab.
+2. Open `simple-labeling-tool.html` again from the folder.
+3. Check that the top of the page says `Version 0.2.0` or newer.
+4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
 
@@ -248,10 +257,14 @@ The worker found the Acme North row.
 The worker searched for Acme North in the CRM.
 The worker changed the Account Owner field to Priya Shah.
 The worker changed the Renewal Date field to 2026-07-31.
+The worker changed the Billing Email field to ap-north@example.test.
+The worker added the internal note.
 The worker saved the record.
 ```
 
 Do not create a separate step for every tiny mouse movement.
+
+When the worker changes several fields on one form, split them into separate steps. This helps us compare the human label to the AI label.
 
 ### 10. Mark Interruptions
 
@@ -326,6 +339,16 @@ Important: the draft is only saved on that computer and in that browser.
 
 ### 15. Export Files
 
+Before exporting, click:
+
+```text
+Check Label Before Export
+```
+
+If the tool shows a red error message, fix the listed problems before exporting.
+
+The tool will not export if required fields are missing.
+
 Click:
 
 ```text
@@ -377,10 +400,15 @@ Before sending your files, check:
 
 - every step has a start time
 - every step has an end time
+- every step end time is after the start time
 - every step says what was visible
+- every step says which app/screen was visible
 - every step has evidence
+- there are no empty step cards
+- if several fields were changed, each important field change has its own step
 - interruptions are listed or say `None observed`
 - rework is listed or says `None observed`
+- discrepancies are listed if something visible does not match
 - uncertainty is listed if anything was unclear
 - you did not include real customer or private data
 
