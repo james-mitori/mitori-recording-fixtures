@@ -27,14 +27,14 @@ gold-labeling/simple-labeling-tool.html
 The top of the page should say:
 
 ```text
-Version 0.3.0
+Version 0.3.1
 ```
 
 If you already had the helper open:
 
 1. Close the old browser tab.
 2. Open `simple-labeling-tool.html` again.
-3. Check that it says `Version 0.3.0`.
+3. Check that it says `Version 0.3.1`.
 4. If it still shows an older version, press `Ctrl` + `F5`.
 
 ## What To Do Again
@@ -48,12 +48,14 @@ video-001-clean-customer-update
 ```
 
 4. Use the helper tool video player for timestamps.
-5. Click inside the step you are editing, then use `Set Step Start` and `Set Step End`.
+5. Click inside the step you are editing, then use `Set active step start to current time` and `Set active step end to current time`.
 6. Watch the video again.
 7. Recreate the steps.
-8. Click `Check Label Before Export`.
-9. Fix any red error messages.
-10. Export both files:
+8. Use `Add next step below` at the bottom of a step when you want to continue with the next action.
+9. Use the `Quick starters` buttons, such as `Clicked`, `Typed`, `Changed`, `Copied`, `Pasted`, and `Saved`, to start common action sentences.
+10. Click `Check Label Before Export`.
+11. Fix any red error messages.
+12. Export both files:
 
 ```text
 video-001-clean-customer-update.gold.json

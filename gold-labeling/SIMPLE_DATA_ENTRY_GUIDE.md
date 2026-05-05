@@ -10,7 +10,7 @@ gold-labeling/simple-labeling-tool.html
 
 Open it in Chrome or Edge.
 
-The current helper tool version is shown at the top of the page. Use version `0.3.0` or newer.
+The current helper tool version is shown at the top of the page. Use version `0.3.1` or newer.
 
 ## Your Job
 
@@ -69,7 +69,7 @@ If you already had the helper tool open from an earlier attempt:
 
 1. Close that browser tab.
 2. Open `simple-labeling-tool.html` again from the folder.
-3. Check that the top of the page says `Version 0.3.0` or newer.
+3. Check that the top of the page says `Version 0.3.1` or newer.
 4. If it still shows an older version, press `Ctrl` + `F5` to refresh the page.
 
 If Windows asks how to open it:
@@ -104,9 +104,9 @@ Use these controls:
 
 - `Play/Pause` starts or stops the video.
 - `Back 5s`, `Back 1s`, `Forward 1s`, and `Forward 5s` move around the video.
-- `Set Step Start` fills the start time for the active step.
-- `Set Step End` fills the end time for the active step.
-- `Set Workflow Start` and `Set Workflow End` fill the whole workflow times.
+- `Set active step start to current time` fills the start time for the highlighted step.
+- `Set active step end to current time` fills the end time for the highlighted step.
+- `Set workflow start to current time` and `Set workflow end to current time` fill the whole workflow times.
 - `Bigger Video` gives the video more space.
 - `Speed` slows down or speeds up playback.
 
@@ -144,6 +144,10 @@ Watch the video again.
 
 Every time the worker does a meaningful action, add a step.
 
+Use `Add blank step at end` to add a new step at the bottom of the list.
+
+Use `Add next step below` at the bottom of a step when you want the next step to appear directly after the step you just finished.
+
 Examples of meaningful actions:
 
 - opens a file
@@ -159,11 +163,13 @@ For each step:
 
 1. Pause where the step starts.
 2. Click inside the step so it is highlighted.
-3. Click `Set Step Start`, or click `Use Current Time` under the step start field.
+3. Click `Set active step start to current time`, or click `Set start to current video time` under the step start field.
 4. Play until the step ends.
-5. Click `Set Step End`, or click `Use Current Time` under the step end field.
+5. Click `Set active step end to current time`, or click `Set end to current video time` under the step end field.
 6. Write what happened.
 7. Write the evidence you can see.
+
+The action and evidence boxes have `Quick starters` buttons. Click one to insert common words such as `Clicked`, `Typed`, `Selected`, `Submitted`, `Changed`, `Copied`, `Pasted`, or `Switched between`.
 
 Use short, clear step labels.
 

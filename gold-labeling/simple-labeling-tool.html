@@ -17,6 +17,7 @@
       --red: #cf222e;
       --red-bg: #fff1f1;
       --green-bg: #dafbe1;
+      --blue-bg: #ddf4ff;
     }
     body {
       margin: 0;
@@ -130,6 +131,9 @@
       font-weight: 700;
       cursor: pointer;
     }
+    button:hover {
+      border-color: var(--blue);
+    }
     button.primary {
       color: white;
       background: var(--blue);
@@ -139,6 +143,22 @@
       color: white;
       background: var(--green);
       border-color: var(--green);
+    }
+    button.timestamp-button {
+      background: var(--blue-bg);
+      border-color: var(--blue);
+      color: #0550ae;
+    }
+    button.ghost-danger {
+      color: var(--red);
+      border-color: #ffcecb;
+    }
+    button.chip {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--bg);
     }
     .row {
       display: grid;
@@ -201,6 +221,33 @@
       gap: 8px;
       margin-bottom: 8px;
     }
+    .step-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .quick-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 6px 0 8px;
+      align-items: center;
+    }
+    .quick-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 2px;
+    }
+    .step-footer {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
     .small {
       color: var(--muted);
       font-size: 12px;
@@ -259,7 +306,7 @@
       border-bottom: 0;
     }
     .step-overview-row.active {
-      background: #ddf4ff;
+      background: var(--blue-bg);
       font-weight: 700;
     }
     .truncate {
@@ -285,7 +332,7 @@
 <body>
   <header>
     <h1>Mitori Gold Label Helper</h1>
-    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.3.0.</p>
+    <p>Use this tool to watch a local video, enter observed workflow steps, and export JSON/Markdown labels. Version 0.3.1.</p>
   </header>
 
   <main>
@@ -310,13 +357,13 @@
           <button type="button" onclick="seekBy(-1)">Back 1s</button>
           <button type="button" onclick="seekBy(1)">Forward 1s</button>
           <button type="button" onclick="seekBy(5)">Forward 5s</button>
-          <button type="button" onclick="captureActiveStepStart()">Set Step Start</button>
-          <button type="button" onclick="captureActiveStepEnd()">Set Step End</button>
+          <button class="timestamp-button" type="button" onclick="captureActiveStepStart()">Set active step start to current time</button>
+          <button class="timestamp-button" type="button" onclick="captureActiveStepEnd()">Set active step end to current time</button>
           <button type="button" onclick="toggleTheaterMode()">Bigger Video</button>
         </div>
         <div class="toolbar">
-          <button type="button" onclick="setTime('workflowStart')">Set Workflow Start</button>
-          <button type="button" onclick="setTime('workflowEnd')">Set Workflow End</button>
+          <button class="timestamp-button" type="button" onclick="setTime('workflowStart')">Set workflow start to current time</button>
+          <button class="timestamp-button" type="button" onclick="setTime('workflowEnd')">Set workflow end to current time</button>
           <label class="small" for="playbackRate">Speed</label>
           <select id="playbackRate" onchange="setPlaybackRate(this.value)">
             <option value="0.5">0.5x</option>
@@ -359,12 +406,12 @@
           <div>
             <label for="workflowStart">Workflow start time</label>
             <input id="workflowStart" type="number" step="0.01" value="0">
-            <button class="inline-button" type="button" onclick="setTime('workflowStart')">Use Current Time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowStart')">Set workflow start to current video time</button>
           </div>
           <div>
             <label for="workflowEnd">Workflow end time</label>
             <input id="workflowEnd" type="number" step="0.01" value="0">
-            <button class="inline-button" type="button" onclick="setTime('workflowEnd')">Use Current Time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setTime('workflowEnd')">Set workflow end to current video time</button>
           </div>
         </div>
 
@@ -378,7 +425,7 @@
           <strong>Simple rule:</strong> every step needs a start time, end time, observed action, and evidence.
           Use plain language. Do not guess. If the worker changes several fields, create one step per field or value changed.
         </div>
-        <button class="primary" type="button" onclick="addStep()">Add Step</button>
+        <button class="primary" type="button" onclick="addStep()">Add blank step at end</button>
         <div id="steps"></div>
       </section>
 
@@ -503,32 +550,56 @@
       return activeStep;
     }
 
-    function addStep(data = {}) {
+    function addStep(data = {}, afterStep = null) {
       const index = steps.children.length + 1;
       const div = document.createElement('div');
       div.className = 'step';
       div.innerHTML = `
         <div class="step-title">
           <strong>Step ${index}</strong>
-          <button type="button" onclick="event.stopPropagation(); removeStep(this)">Remove</button>
+          <div class="step-actions">
+            <button class="ghost-danger" type="button" onclick="event.stopPropagation(); removeStep(this)">Remove step</button>
+          </div>
         </div>
         <div class="row">
           <div>
             <label>Start time</label>
             <input class="step-start" type="number" step="0.01" value="${data.start_time_sec ?? ''}">
-            <button class="inline-button" type="button" onclick="setStepTimeFromButton(this, '.step-start')">Use Current Time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-start')">Set start to current video time</button>
           </div>
           <div>
             <label>End time</label>
             <input class="step-end" type="number" step="0.01" value="${data.end_time_sec ?? ''}">
-            <button class="inline-button" type="button" onclick="setStepTimeFromButton(this, '.step-end')">Use Current Time</button>
+            <button class="inline-button timestamp-button" type="button" onclick="setStepTimeFromButton(this, '.step-end')">Set end to current video time</button>
           </div>
         </div>
         <label>Observed action</label>
+        <div class="quick-row" aria-label="Observed action starters">
+          <span class="quick-label">Quick starters:</span>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Clicked ')">Clicked</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Typed ')">Typed</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Selected ')">Selected</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Submitted ')">Submitted</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Changed ')">Changed</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Copied ')">Copied</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Pasted ')">Pasted</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Switched between ')">Switched between</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Opened ')">Opened</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Reviewed ')">Reviewed</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-action', 'Saved ')">Saved</button>
+        </div>
         <textarea class="step-action" placeholder="What did the worker do?">${escapeHtml(data.observed_label || '')}</textarea>
         <label>Screen/app context</label>
         <input class="step-context" placeholder="Example: Excel, Chrome CRM page, File Explorer" value="${escapeHtml(data.screen_context || '')}">
         <label>Evidence you can see</label>
+        <div class="quick-row" aria-label="Evidence starters">
+          <span class="quick-label">Quick starters:</span>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Field shows ')">Field shows</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Page shows ')">Page shows</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Message says ')">Message says</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Button clicked: ')">Button clicked</button>
+          <button class="chip" type="button" onclick="insertIntoStepField(this, '.step-evidence', 'Value changed from ')">Value changed from</button>
+        </div>
         <textarea class="step-evidence" placeholder="Example: Account Owner field shows Priya Shah.">${escapeHtml(data.evidence_text || '')}</textarea>
         <div class="row">
           <div>
@@ -542,14 +613,43 @@
             <input class="step-uncertainty" placeholder="Leave blank if none" value="${escapeHtml(data.uncertainty || '')}">
           </div>
         </div>
+        <div class="step-footer">
+          <button class="primary" type="button" onclick="event.stopPropagation(); addStepAfter(this)">Add next step below</button>
+          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-start')">Set this step start to current time</button>
+          <button class="timestamp-button" type="button" onclick="event.stopPropagation(); setStepTimeFromButton(this, '.step-end')">Set this step end to current time</button>
+        </div>
       `;
-      steps.appendChild(div);
+      if (afterStep && afterStep.parentElement === steps) {
+        afterStep.after(div);
+      } else {
+        steps.appendChild(div);
+      }
       div.addEventListener('click', () => setActiveStep(div));
       div.addEventListener('focusin', () => setActiveStep(div));
-      if (!activeStep || !steps.contains(activeStep)) {
-        setActiveStep(div);
+      setActiveStep(div);
+      renumberSteps();
+    }
+
+    function addStepAfter(button) {
+      const step = button.closest('.step');
+      addStep({}, step);
+      if (step.nextElementSibling) {
+        step.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-      renderStepOverview();
+    }
+
+    function insertIntoStepField(button, selector, text) {
+      const step = button.closest('.step');
+      setActiveStep(step);
+      const field = step.querySelector(selector);
+      const start = field.selectionStart ?? field.value.length;
+      const end = field.selectionEnd ?? field.value.length;
+      const prefix = field.value && start > 0 && !/\s$/.test(field.value.slice(0, start)) ? ' ' : '';
+      field.value = `${field.value.slice(0, start)}${prefix}${text}${field.value.slice(end)}`;
+      const nextPosition = start + prefix.length + text.length;
+      field.focus();
+      field.setSelectionRange(nextPosition, nextPosition);
+      handleFormEdit();
     }
 
     function removeStep(button) {
@@ -667,7 +767,7 @@
         sample_id: sampleId,
         gold_label_version: '0.1.0',
         label_type: 'human_video_observed_gold',
-        tool_version: 'simple-labeling-tool-0.3.0',
+        tool_version: 'simple-labeling-tool-0.3.1',
         labeler_id: value('labelerId'),
         adjudicated: false,
         source_files_used: ['video_only'],
