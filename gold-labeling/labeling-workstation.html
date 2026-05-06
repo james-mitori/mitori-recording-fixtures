@@ -1263,6 +1263,19 @@
         </div>
       </div>
 
+      <div style="margin-bottom:10px;">
+        <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
+          <label class="field-label" for="wrapWorkflowEnd" style="margin:0;">Workflow end time</label>
+          <span class="info-mark" tabindex="0" data-tip="The timestamp where the observed workflow visibly finishes. Usually this is the final step end time or the video end. If the wrong video was loaded earlier, check this before exporting.">?</span>
+        </div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;">
+          <input id="wrapWorkflowEnd" type="number" min="0" step="0.01" placeholder="seconds, e.g. 118.97">
+          <button type="button" onclick="setWorkflowEndToLastStep()">Use last step</button>
+          <button type="button" onclick="setWorkflowEndToVideoEnd()">Use video end</button>
+        </div>
+        <p class="modal-sub" id="wrapWorkflowEndHint" style="margin:6px 0 0;font-size:12px;"></p>
+      </div>
+
       <div>
         <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
           <label class="field-label" for="wrapSummary" style="margin:0;">Short summary</label>
@@ -1515,7 +1528,7 @@
    Single-file HTML tool. No build step. No backend.
 ───────────────────────────────────────────────────────────── */
 
-const TOOL_VERSION = 'labeling-workstation-1.0.0';
+const TOOL_VERSION = 'labeling-workstation-1.0.1';
 const GOLD_VERSION = '0.2.0';
 const STORAGE_LEGACY = 'mitori.workstation.draft.v1';
 const STORAGE_PREFIX = 'mitori.workstation.draft.v2.';
@@ -1635,6 +1648,8 @@ const els = {
   exportValidation: document.getElementById('exportValidation'),
   wrapOutcome: document.getElementById('wrapOutcome'),
   wrapConfidence: document.getElementById('wrapConfidence'),
+  wrapWorkflowEnd: document.getElementById('wrapWorkflowEnd'),
+  wrapWorkflowEndHint: document.getElementById('wrapWorkflowEndHint'),
   wrapSummary: document.getElementById('wrapSummary'),
   signoffName: document.getElementById('signoffName'),
   signoffDate: document.getElementById('signoffDate'),
@@ -1964,7 +1979,7 @@ function round2(n) {
 
 function clampWorkflowToSteps() {
   // Auto-extend the workflow start/end so it always contains all steps.
-  // Never shrinks below the loaded video duration's range.
+  // Cap the workflow end to the loaded video duration.
   const steps = state.steps;
   let minStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : 0;
   let maxEnd = Number.isFinite(state.workflowEndSec) ? state.workflowEndSec : 0;
@@ -1984,6 +1999,46 @@ function clampWorkflowToSteps() {
     state.workflowStartSec = minStart;
     state.workflowEndSec = maxEnd;
   }
+}
+
+function lastStepEndSec(steps = getSortedSteps()) {
+  const ends = steps.map(s => s.endSec).filter(Number.isFinite);
+  return ends.length ? Math.max(...ends) : 0;
+}
+
+function videoEndSec() {
+  return Number.isFinite(state.videoDuration) && state.videoDuration > 0 ? round2(state.videoDuration) : 0;
+}
+
+function workflowEndForExport(steps = getSortedSteps()) {
+  const lastEnd = lastStepEndSec(steps);
+  let wfEnd = Number.isFinite(state.workflowEndSec) && state.workflowEndSec > 0 ? state.workflowEndSec : lastEnd;
+  if (lastEnd > wfEnd) wfEnd = lastEnd;
+  const videoEnd = videoEndSec();
+  if (videoEnd && wfEnd > videoEnd) wfEnd = videoEnd;
+  return round2(wfEnd);
+}
+
+function setWorkflowEnd(sec, opts = {}) {
+  if (!Number.isFinite(sec) || sec <= 0) return;
+  let next = sec;
+  const videoEnd = videoEndSec();
+  if (videoEnd && next > videoEnd) next = videoEnd;
+  state.workflowEndSec = round2(next);
+  if (els.wrapWorkflowEnd && opts.syncInput !== false) {
+    els.wrapWorkflowEnd.value = String(state.workflowEndSec);
+  }
+  scheduleSave();
+  refreshExportValidation();
+  renderTimeline();
+}
+
+function setWorkflowEndToLastStep() {
+  setWorkflowEnd(lastStepEndSec());
+}
+
+function setWorkflowEndToVideoEnd() {
+  setWorkflowEnd(videoEndSec());
 }
 
 function setActiveStepStartFromManual() {
@@ -2811,9 +2866,7 @@ function buildExport() {
   });
 
   const wfStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : 0;
-  const wfEnd = Number.isFinite(state.workflowEndSec) && state.workflowEndSec > 0 ? state.workflowEndSec : (
-    sorted.length ? Math.max(...sorted.filter(s => Number.isFinite(s.endSec)).map(s => s.endSec)) : 0
-  );
+  const wfEnd = workflowEndForExport(sorted);
 
   const sourceFiles = ['video_only'];
   if (state.telemetry) sourceFiles.push('telemetry_sidecar');
@@ -2877,11 +2930,17 @@ function validate(data) {
   if (!wf.summary) errors.push('Wrap-up: write the short summary.');
   if (!wf.completion_status) errors.push('Wrap-up: pick the workflow outcome.');
   if (wf.end_time_sec <= wf.start_time_sec) errors.push('Workflow end time must be after start time.');
+  if (state.videoDuration && wf.end_time_sec > state.videoDuration + 0.01) {
+    errors.push(`Workflow end time (${wf.end_time_sec}s) is after the loaded video ends (${round2(state.videoDuration)}s).`);
+  }
   if (wf.steps.length === 0) errors.push('Add at least one step.');
 
   wf.steps.forEach((s, i) => {
     const prefix = `Step ${i + 1}`;
     if (s.end_time_sec <= s.start_time_sec) errors.push(`${prefix}: end time must be after start time.`);
+    if (state.videoDuration && s.end_time_sec > state.videoDuration + 0.01) {
+      errors.push(`${prefix}: end time (${s.end_time_sec}s) is after the loaded video ends (${round2(state.videoDuration)}s).`);
+    }
     if (!s.observed_label) errors.push(`${prefix}: observed action is missing.`);
     if (!s.screen_context) errors.push(`${prefix}: screen/app context is missing.`);
     const ev = s.evidence?.[0]?.visible_evidence || '';
@@ -2923,6 +2982,7 @@ function openExportModal() {
   // Hydrate wrap-up controls from state
   els.wrapOutcome.value = state.wrapup.completionStatus || 'completed';
   els.wrapConfidence.value = String(state.wrapup.workflowConfidence ?? 0.87);
+  if (els.wrapWorkflowEnd) els.wrapWorkflowEnd.value = String(workflowEndForExport());
   els.wrapSummary.value = state.wrapup.summary || '';
   refreshExportValidation();
 }
@@ -2940,6 +3000,14 @@ function bindWrapupControls() {
     refreshExportValidation();
     scheduleSave();
   });
+  if (els.wrapWorkflowEnd) els.wrapWorkflowEnd.addEventListener('input', () => {
+    const manualEnd = Number(els.wrapWorkflowEnd.value);
+    if (Number.isFinite(manualEnd) && manualEnd > 0) {
+      setWorkflowEnd(manualEnd, { syncInput: false });
+    } else {
+      refreshExportValidation();
+    }
+  });
   if (els.wrapSummary) els.wrapSummary.addEventListener('input', () => {
     state.wrapup.summary = els.wrapSummary.value;
     refreshExportValidation();
@@ -2950,6 +3018,11 @@ function bindWrapupControls() {
 function refreshExportValidation() {
   const data = buildExport();
   const { errors, warnings } = validate(data);
+  if (els.wrapWorkflowEndHint) {
+    const lastEnd = lastStepEndSec();
+    const videoEnd = videoEndSec();
+    els.wrapWorkflowEndHint.textContent = `Last step ends at ${formatTime(lastEnd)}. Loaded video ends at ${videoEnd ? formatTime(videoEnd) : 'unknown'}.`;
+  }
   if (errors.length === 0 && warnings.length === 0) {
     els.exportValidation.innerHTML = `<div class="validation-banner success"><h3>Label looks complete</h3><p>No errors or warnings. You're good to export.</p></div>`;
     return;
@@ -3349,10 +3422,13 @@ document.addEventListener('visibilitychange', () => {
 els.video.addEventListener('loadedmetadata', () => {
   state.videoDuration = els.video.duration || 0;
   els.durTimeDisp.textContent = formatTime(state.videoDuration);
-  // If the workflow end is unset, or stale (e.g. from a previous shorter video / tour
-  // leftover), expand it to cover the whole new video. Never shrink past existing steps.
+  // If the workflow end is unset, expand it to cover the whole new video.
+  // If a wrong/long video was loaded first, shrink stale workflow ends to the
+  // currently loaded video so bad durations cannot leak into exports.
   const haveSteps = state.steps.some(s => Number.isFinite(s.endSec));
   if (state.workflowEndSec === 0 || (!haveSteps && state.workflowEndSec < state.videoDuration)) {
+    state.workflowEndSec = state.videoDuration;
+  } else if (state.videoDuration && state.workflowEndSec > state.videoDuration) {
     state.workflowEndSec = state.videoDuration;
   }
   clampWorkflowToSteps();
