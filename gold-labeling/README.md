@@ -36,6 +36,8 @@ The first time you open it, a 3-minute interactive tour explains the keyboard rh
 
 Drafts autosave to your browser per video ID — your work survives a refresh, but you'll need to re-pick the local video file (browsers can't persist files across reloads).
 
+The manual timestamp control under the video only sets the active step start/end. Workflow start and workflow end are set in **Wrap up & export**. For split exports inside a longer video, check those fields before downloading. For example, an invoice workflow that starts halfway through the source video should start at its first invoice step, not at `0s`.
+
 If you're training someone, see [`TRAINING_SCRIPT.md`](TRAINING_SCRIPT.md) — a 75–90 minute virtual trainer runbook with a worked example using `video-001-clean-customer-update.mp4`.
 
 The earlier helper is kept for in-flight workers:

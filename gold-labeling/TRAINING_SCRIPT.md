@@ -350,6 +350,8 @@ For each of these, repeat the A/S rhythm:
 |---|---|
 | Workflow outcome | Most likely **Completed** (the worker did save the record). If you saw the worker abandon or close without saving, pick **Abandoned** instead. |
 | Workflow confidence | **Strong** if the action and evidence were clearly visible across the whole video. **Likely** if some stretches were unclear. Don't pick **Doubtful** unless you genuinely can't tell what happened. |
+| Workflow start time | The timestamp where this workflow begins. For a split export inside a longer video, use the first step time, not `0s`. Use **Use first step** unless there is a clear reason to type a different timestamp. |
+| Workflow end time | The timestamp where this workflow finishes. Usually use **Use last step**. Do not use the full video end if the worker did unrelated activity after this workflow. |
 | Short summary | Two to four plain sentences. Example: "Worker opened a customer update spreadsheet, opened the CRM, searched for Acme North, and updated the Account Owner, Renewal Date, Billing Email, and Internal Note fields against the spreadsheet values. The record saved successfully but the customer list and Status field appeared inconsistent with the new spreadsheet values." |
 
 > _Trainer note: Watch the validation banner at the top of the modal. If it shows red errors (e.g. "Step 7: visible evidence is missing"), close the modal, fix the step, come back. Validation re-runs every time you open the modal._

@@ -1048,9 +1048,9 @@
       </div>
       <div class="manual-time">
         <label class="sr" for="manualTime">Manual timestamp</label>
-        <input id="manualTime" placeholder="01:42.30" title="Type a timestamp (MM:SS.cc, HH:MM:SS, or seconds), then use Set start / Set end">
-        <button type="button" class="tiny" onclick="setActiveStepStartFromManual()">Set start</button>
-        <button type="button" class="tiny" onclick="setActiveStepEndFromManual()">Set end</button>
+        <input id="manualTime" placeholder="01:42.30" title="Type a timestamp (MM:SS.cc, HH:MM:SS, or seconds), then use Set step start / Set step end for the active step">
+        <button type="button" class="tiny" onclick="setActiveStepStartFromManual()" title="Set the active step start time, not the workflow start">Set step start</button>
+        <button type="button" class="tiny" onclick="setActiveStepEndFromManual()" title="Set the active step end time, not the workflow end">Set step end</button>
       </div>
     </div>
 
@@ -1263,18 +1263,29 @@
         </div>
       </div>
 
-      <div style="margin-bottom:10px;">
-        <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
-          <label class="field-label" for="wrapWorkflowEnd" style="margin:0;">Workflow end time</label>
-          <span class="info-mark" tabindex="0" data-tip="The timestamp where the observed workflow visibly finishes. Usually this is the final step end time or the video end. If the wrong video was loaded earlier, check this before exporting.">?</span>
+      <div class="row-2" style="margin-bottom:10px;">
+        <div>
+          <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
+            <label class="field-label" for="wrapWorkflowStart" style="margin:0;">Workflow start time</label>
+            <span class="info-mark" tabindex="0" data-tip="The timestamp where this workflow visibly starts. For a split workflow export, this is usually the first step start time, not 0s.">?</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;">
+            <input id="wrapWorkflowStart" type="number" min="0" step="0.01" placeholder="seconds, e.g. 73.23">
+            <button type="button" onclick="setWorkflowStartToFirstStep()">Use first step</button>
+          </div>
         </div>
-        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;">
-          <input id="wrapWorkflowEnd" type="number" min="0" step="0.01" placeholder="seconds, e.g. 118.97">
-          <button type="button" onclick="setWorkflowEndToLastStep()">Use last step</button>
-          <button type="button" onclick="setWorkflowEndToVideoEnd()">Use video end</button>
+        <div>
+          <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
+            <label class="field-label" for="wrapWorkflowEnd" style="margin:0;">Workflow end time</label>
+            <span class="info-mark" tabindex="0" data-tip="The timestamp where the observed workflow visibly finishes. Usually this is the final step end time, not the whole video end. If the wrong video was loaded earlier, check this before exporting.">?</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;">
+            <input id="wrapWorkflowEnd" type="number" min="0" step="0.01" placeholder="seconds, e.g. 202.71">
+            <button type="button" onclick="setWorkflowEndToLastStep()">Use last step</button>
+          </div>
         </div>
-        <p class="modal-sub" id="wrapWorkflowEndHint" style="margin:6px 0 0;font-size:12px;"></p>
       </div>
+      <p class="modal-sub" id="wrapWorkflowBoundaryHint" style="margin:6px 0 10px;font-size:12px;"></p>
 
       <div>
         <div class="field-label-row" style="display:flex;align-items:center;gap:6px;">
@@ -1528,7 +1539,7 @@
    Single-file HTML tool. No build step. No backend.
 ───────────────────────────────────────────────────────────── */
 
-const TOOL_VERSION = 'labeling-workstation-1.0.1';
+const TOOL_VERSION = 'labeling-workstation-1.0.2';
 const GOLD_VERSION = '0.2.0';
 const STORAGE_LEGACY = 'mitori.workstation.draft.v1';
 const STORAGE_PREFIX = 'mitori.workstation.draft.v2.';
@@ -1648,8 +1659,9 @@ const els = {
   exportValidation: document.getElementById('exportValidation'),
   wrapOutcome: document.getElementById('wrapOutcome'),
   wrapConfidence: document.getElementById('wrapConfidence'),
+  wrapWorkflowStart: document.getElementById('wrapWorkflowStart'),
   wrapWorkflowEnd: document.getElementById('wrapWorkflowEnd'),
-  wrapWorkflowEndHint: document.getElementById('wrapWorkflowEndHint'),
+  wrapWorkflowBoundaryHint: document.getElementById('wrapWorkflowBoundaryHint'),
   wrapSummary: document.getElementById('wrapSummary'),
   signoffName: document.getElementById('signoffName'),
   signoffDate: document.getElementById('signoffDate'),
@@ -2006,8 +2018,23 @@ function lastStepEndSec(steps = getSortedSteps()) {
   return ends.length ? Math.max(...ends) : 0;
 }
 
+function firstStepStartSec(steps = getSortedSteps()) {
+  const starts = steps.map(s => s.startSec).filter(Number.isFinite);
+  return starts.length ? Math.min(...starts) : 0;
+}
+
 function videoEndSec() {
   return Number.isFinite(state.videoDuration) && state.videoDuration > 0 ? round2(state.videoDuration) : 0;
+}
+
+function workflowStartForExport(steps = getSortedSteps()) {
+  const firstStart = firstStepStartSec(steps);
+  let wfStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : firstStart;
+  // Old drafts defaulted workflow start to 0. For split exports where the first
+  // step begins later in the video, default the workflow boundary to the first
+  // observed step unless the worker enters a different start manually.
+  if (wfStart === 0 && firstStart > 0) wfStart = firstStart;
+  return round2(Math.max(0, wfStart));
 }
 
 function workflowEndForExport(steps = getSortedSteps()) {
@@ -2017,6 +2044,20 @@ function workflowEndForExport(steps = getSortedSteps()) {
   const videoEnd = videoEndSec();
   if (videoEnd && wfEnd > videoEnd) wfEnd = videoEnd;
   return round2(wfEnd);
+}
+
+function setWorkflowStart(sec, opts = {}) {
+  if (!Number.isFinite(sec) || sec < 0) return;
+  let next = sec;
+  const videoEnd = videoEndSec();
+  if (videoEnd && next > videoEnd) next = videoEnd;
+  state.workflowStartSec = round2(next);
+  if (els.wrapWorkflowStart && opts.syncInput !== false) {
+    els.wrapWorkflowStart.value = String(state.workflowStartSec);
+  }
+  scheduleSave();
+  refreshExportValidation();
+  renderTimeline();
 }
 
 function setWorkflowEnd(sec, opts = {}) {
@@ -2031,6 +2072,10 @@ function setWorkflowEnd(sec, opts = {}) {
   scheduleSave();
   refreshExportValidation();
   renderTimeline();
+}
+
+function setWorkflowStartToFirstStep() {
+  setWorkflowStart(firstStepStartSec());
 }
 
 function setWorkflowEndToLastStep() {
@@ -2512,7 +2557,7 @@ function renderTimeline() {
   const sorted = getSortedSteps();
   const playhead = currentVideoTime();
 
-  const wfStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : 0;
+  const wfStart = workflowStartForExport(sorted);
   const wfEnd = Number.isFinite(state.workflowEndSec) && state.workflowEndSec > 0 ? state.workflowEndSec : dur;
 
   // Telemetry tick HTML
@@ -2865,7 +2910,7 @@ function buildExport() {
     };
   });
 
-  const wfStart = Number.isFinite(state.workflowStartSec) ? state.workflowStartSec : 0;
+  const wfStart = workflowStartForExport(sorted);
   const wfEnd = workflowEndForExport(sorted);
 
   const sourceFiles = ['video_only'];
@@ -2982,6 +3027,7 @@ function openExportModal() {
   // Hydrate wrap-up controls from state
   els.wrapOutcome.value = state.wrapup.completionStatus || 'completed';
   els.wrapConfidence.value = String(state.wrapup.workflowConfidence ?? 0.87);
+  if (els.wrapWorkflowStart) els.wrapWorkflowStart.value = String(workflowStartForExport());
   if (els.wrapWorkflowEnd) els.wrapWorkflowEnd.value = String(workflowEndForExport());
   els.wrapSummary.value = state.wrapup.summary || '';
   refreshExportValidation();
@@ -2999,6 +3045,14 @@ function bindWrapupControls() {
     state.wrapup.workflowConfidence = Number(els.wrapConfidence.value) || 0.87;
     refreshExportValidation();
     scheduleSave();
+  });
+  if (els.wrapWorkflowStart) els.wrapWorkflowStart.addEventListener('input', () => {
+    const manualStart = Number(els.wrapWorkflowStart.value);
+    if (Number.isFinite(manualStart) && manualStart >= 0) {
+      setWorkflowStart(manualStart, { syncInput: false });
+    } else {
+      refreshExportValidation();
+    }
   });
   if (els.wrapWorkflowEnd) els.wrapWorkflowEnd.addEventListener('input', () => {
     const manualEnd = Number(els.wrapWorkflowEnd.value);
@@ -3018,10 +3072,11 @@ function bindWrapupControls() {
 function refreshExportValidation() {
   const data = buildExport();
   const { errors, warnings } = validate(data);
-  if (els.wrapWorkflowEndHint) {
+  if (els.wrapWorkflowBoundaryHint) {
+    const firstStart = firstStepStartSec();
     const lastEnd = lastStepEndSec();
     const videoEnd = videoEndSec();
-    els.wrapWorkflowEndHint.textContent = `Last step ends at ${formatTime(lastEnd)}. Loaded video ends at ${videoEnd ? formatTime(videoEnd) : 'unknown'}.`;
+    els.wrapWorkflowBoundaryHint.textContent = `First step starts at ${formatTime(firstStart)}. Last step ends at ${formatTime(lastEnd)}. Loaded video ends at ${videoEnd ? formatTime(videoEnd) : 'unknown'}.`;
   }
   if (errors.length === 0 && warnings.length === 0) {
     els.exportValidation.innerHTML = `<div class="validation-banner success"><h3>Label looks complete</h3><p>No errors or warnings. You're good to export.</p></div>`;
