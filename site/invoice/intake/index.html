@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fixture invoice intake form for invoice 1048.">
+  <title>Invoice Intake - New Invoice</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">AP</div>
+          <div>
+            <p class="brand-name">Fixture Workspace</p>
+            <p class="brand-subtitle">Accounts payable intake</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Fixture tools">
+          <a href="/crm/customers/C-10017/">CRM</a>
+          <a class="active" href="/invoice/intake/">Invoice Intake</a>
+          <a href="/support/cases/new/">Support</a>
+          <a href="/credentialing/providers/TJC-2048/">Credentialing</a>
+        </nav>
+      </div>
+    </header>
+    <div class="notice-strip">
+      <div class="inner">Synthetic data only. Use invoice_1048.pdf as the source document for this recording workflow.</div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Invoice Intake</p>
+          <h1>New Invoice Entry</h1>
+          <p class="muted">Enter invoice 1048, validate the amount, and submit for approval.</p>
+        </div>
+        <div class="summary-row">
+          <span class="pill">Invoice: 1048</span>
+          <span class="pill">Expected total: 1426.00</span>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Invoice Details</h2>
+          <span class="pill">Status: Draft</span>
+        </div>
+        <div class="panel-body">
+          <div class="grid">
+            <div class="field">
+              <label for="vendor">Vendor</label>
+              <input id="vendor" name="vendor" placeholder="Vendor name" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="number">Invoice number</label>
+              <input id="number" name="invoice_number" placeholder="Invoice number" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="issue">Issue date</label>
+              <input id="issue" name="issue_date" placeholder="YYYY-MM-DD" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="due">Due date</label>
+              <input id="due" name="due_date" placeholder="YYYY-MM-DD" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="dept">Department</label>
+              <select id="dept" name="department">
+                <option></option>
+                <option>Operations</option>
+                <option>Finance</option>
+                <option>Credentialing</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="amount">Total amount</label>
+              <input id="amount" name="total_amount" placeholder="0.00" autocomplete="off">
+            </div>
+          </div>
+          <div class="field" style="margin-top: 14px;">
+            <label for="invoiceNotes">Processing notes</label>
+            <textarea id="invoiceNotes" name="processing_notes" rows="3" placeholder="Optional processing notes"></textarea>
+          </div>
+          <div class="actions">
+            <button type="button" class="secondary" onclick="validateInvoice()">Validate invoice</button>
+            <button type="button" onclick="submitInvoice()">Submit invoice</button>
+          </div>
+          <div id="warn" class="status-message warning"><span id="invoiceWarningText">Validation warning: confirm the total amount and department before submitting.</span></div>
+          <div id="done" class="status-message">Invoice 1048 submitted for approval.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
