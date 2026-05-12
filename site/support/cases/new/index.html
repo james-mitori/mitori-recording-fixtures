@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fixture support case console for Acme North billing portal access issue.">
+  <title>Support Console - New Case</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SC</div>
+          <div>
+            <p class="brand-name">Fixture Workspace</p>
+            <p class="brand-subtitle">Support case console</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Fixture tools">
+          <a href="/crm/customers/C-10017/">CRM</a>
+          <a href="/invoice/intake/">Invoice Intake</a>
+          <a class="active" href="/support/cases/new/">Support</a>
+          <a href="/credentialing/providers/TJC-2048/">Credentialing</a>
+        </nav>
+      </div>
+    </header>
+    <div class="notice-strip">
+      <div class="inner">Synthetic data only. Use support_email.txt as the source message for this recording workflow.</div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Support Case Console</p>
+          <h1>New Support Case</h1>
+          <p class="muted">Create a billing portal case for Acme North and submit it to the operations queue.</p>
+        </div>
+        <div class="summary-row">
+          <span class="pill">Account: C-10017</span>
+          <span class="pill">Priority: Medium</span>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Case Details</h2>
+          <span class="pill">Queue: Operations</span>
+        </div>
+        <div class="panel-body">
+          <div class="grid">
+            <div class="field">
+              <label for="customer">Customer</label>
+              <input id="customer" name="customer" placeholder="Customer name" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="accountId">Account ID</label>
+              <input id="accountId" name="account_id" placeholder="Account ID" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority">
+                <option></option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option></option>
+                <option>Billing Portal</option>
+                <option>Login</option>
+                <option>Data Request</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-top: 14px;">
+            <label for="summary">Issue summary</label>
+            <input id="summary" name="issue_summary" placeholder="Short summary" autocomplete="off">
+          </div>
+          <div class="field" style="margin-top: 14px;">
+            <label for="caseNotes">Case notes</label>
+            <textarea id="caseNotes" name="case_notes" rows="5" placeholder="Observed issue and requested action"></textarea>
+          </div>
+          <div class="actions">
+            <button type="button" class="secondary" onclick="saveSupportDraft()">Save draft</button>
+            <button type="button" onclick="submitSupportCase()">Submit case</button>
+          </div>
+          <div id="draft" class="status-message warning">Draft saved. Case is not submitted yet.</div>
+          <div id="caseDone" class="status-message">Support case submitted. Case ID: SC-58291.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

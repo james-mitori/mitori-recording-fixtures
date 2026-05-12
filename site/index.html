@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hosted synthetic workflow tools for Mitori recording fixtures.">
+  <title>Fixture Workspace - Hosted Fake Tools</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">FW</div>
+          <div>
+            <p class="brand-name">Fixture Workspace</p>
+            <p class="brand-subtitle">Hosted fake tools for recording sessions</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Fixture tools">
+          <a href="/crm/customers/C-10017/">CRM</a>
+          <a href="/invoice/intake/">Invoice Intake</a>
+          <a href="/support/cases/new/">Support</a>
+          <a href="/credentialing/providers/TJC-2048/">Credentialing</a>
+        </nav>
+      </div>
+    </header>
+    <div class="notice-strip">
+      <div class="inner">Synthetic data only. Do not enter real customer, patient, financial, password, or personal information.</div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Recording fixture launcher</p>
+          <h1>Hosted Fake Tools</h1>
+          <p class="muted">Use these routes when recording workflows through a real browser URL instead of local file pages.</p>
+        </div>
+        <div class="summary-row" aria-label="Deployment summary">
+          <span class="pill">Static root: site/</span>
+          <span class="pill">No backend</span>
+          <span class="pill">Synthetic only</span>
+        </div>
+      </div>
+
+      <section class="task-card-grid" aria-label="Available fixture tools">
+        <a class="task-card" href="/crm/customers/C-10017/">
+          <div>
+            <h2>Fixture CRM</h2>
+            <p class="muted">Search for Acme North and update the customer record.</p>
+          </div>
+          <p class="route">/crm/customers/C-10017/</p>
+        </a>
+        <a class="task-card" href="/invoice/intake/">
+          <div>
+            <h2>Invoice Intake</h2>
+            <p class="muted">Enter invoice 1048, validate the amount, and submit it.</p>
+          </div>
+          <p class="route">/invoice/intake/</p>
+        </a>
+        <a class="task-card" href="/support/cases/new/">
+          <div>
+            <h2>Support Case Console</h2>
+            <p class="muted">Create a billing portal support case for Acme North.</p>
+          </div>
+          <p class="route">/support/cases/new/</p>
+        </a>
+        <a class="task-card" href="/credentialing/providers/TJC-2048/">
+          <div>
+            <h2>Credentialing Portal</h2>
+            <p class="muted">Mark Taylor Morgan's license verification complete.</p>
+          </div>
+          <p class="route">/credentialing/providers/TJC-2048/</p>
+        </a>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -69,6 +69,22 @@ The worker pack contains:
 - worker recording instructions
 - Windows screen-recording instructions
 
+## Hosted Fake Tools
+
+The `site/` directory contains hosted versions of the fake CRM, invoice intake,
+support case, and credentialing pages. It is intended for static hosting when
+recordings should use real browser URLs instead of local `file://` HTML pages.
+
+Suggested static hosting settings:
+
+```text
+Static root: site/
+Suggested domain: recording-fixtures.dev.mitori.ai
+```
+
+The existing worker pack and local browser pages remain available for file-based
+recording sessions.
+
 ## Windows Extraction
 
 In PowerShell, from the folder containing the zip:

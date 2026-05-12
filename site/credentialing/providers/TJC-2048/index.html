@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fixture credentialing provider checklist for Taylor Morgan, candidate TJC-2048.">
+  <title>Credentialing Portal - Provider TJC-2048</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">CP</div>
+          <div>
+            <p class="brand-name">Fixture Workspace</p>
+            <p class="brand-subtitle">Provider credentialing portal</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Fixture tools">
+          <a href="/crm/customers/C-10017/">CRM</a>
+          <a href="/invoice/intake/">Invoice Intake</a>
+          <a href="/support/cases/new/">Support</a>
+          <a class="active" href="/credentialing/providers/TJC-2048/">Credentialing</a>
+        </nav>
+      </div>
+    </header>
+    <div class="notice-strip">
+      <div class="inner">Synthetic data only. Use credentialing_checklist.txt as the source document for this recording workflow.</div>
+    </div>
+    <main class="page">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Credentialing Portal</p>
+          <h1>Provider Checklist: Taylor Morgan</h1>
+          <p class="muted">Review candidate TJC-2048 and mark license verification complete.</p>
+        </div>
+        <div class="summary-row">
+          <span class="pill">Candidate ID: TJC-2048</span>
+          <span class="pill">Role: Agency RN</span>
+          <span class="pill">Facility: Harbor Clinic Group</span>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Credentialing Checklist</h2>
+          <span class="pill">Status: In review</span>
+        </div>
+        <div class="panel-body">
+          <table aria-label="Taylor Morgan credentialing checklist">
+            <thead>
+              <tr><th>Item</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Identity document received</td>
+                <td><span class="checklist-status complete">Complete</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>License verified</td>
+                <td><span id="licenseStatus" class="checklist-status pending">Pending</span></td>
+                <td><button type="button" onclick="markLicenseComplete()">Mark complete</button></td>
+              </tr>
+              <tr>
+                <td>Reference check</td>
+                <td><span class="checklist-status">In review</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Background check</td>
+                <td><span class="checklist-status pending">Pending vendor response</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Signed policy acknowledgment</td>
+                <td><span class="checklist-status complete">Complete</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Immunization attestation</td>
+                <td><span class="checklist-status complete">Complete</span></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div id="credentialingDone" class="status-message">License verification marked complete for Taylor Morgan.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
